@@ -2,20 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Variabili CSS */
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --primary: #0070f3;
+  --font-sans: "nocturne-serif-lights", serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: "nocturne-serif-lights";
-  --font-mono: "nocturne-serif-lights";
-}
-
+/* Body base */
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: "nocturne-serif-lights", serif; 
+  font-family: var(--font-sans);
 }
+
+/* Classe testuale bianca */
+.text-white {
+  color: #fff;
+}
+
