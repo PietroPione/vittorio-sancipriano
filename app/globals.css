@@ -1,24 +1,36 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-/* Variabili CSS */
-:root {
+@theme {
   --background: #ffffff;
   --foreground: #171717;
   --primary: #0070f3;
   --font-sans: "nocturne-serif-lights", serif;
 }
 
-/* Body base */
 body {
   background-color: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
 }
 
-/* Classe testuale bianca */
 .text-white {
   color: #fff;
 }
 
+@utility container {
+  @apply mx-auto w-full px-4;
+  max-width: 90vw;
+}
+
+@utility container-unset {
+  max-width: unset;
+  width: unset;
+  padding-inline: unset;
+  margin-inline: unset;
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 90vw;
+  }
+}
