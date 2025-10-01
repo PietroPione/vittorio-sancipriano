@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { ThemeProvider } from "@/app/components/ThemeProvider";
+import ClientLayout from "@/app/components/ClientLayout";
+import Menu, { MenuItem } from "@/app/components/Menu";
 
 type ThemeOptions = {
   colore_dark: string;
@@ -32,21 +33,30 @@ async function getThemeData(): Promise<ThemeData> {
   return { acf: { colore_dark: '#333333', colore_light: '#ffffff', dimensione_data: '2', dimensione_titoli: '3' } };
 }
 
+async function getMenuItems(): Promise<MenuItem[]> {
+    try {
+        const res = await fetch(`https://vs.ferdinandocambiale.com/wp-json/wp/v2/menu`, { cache: "no-store" });
+        if (!res.ok) return [];
+        return res.json();
+    } catch {
+        return [];
+    }
+}
 
 export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const data = await getThemeData();
+  const [themeData, menuItems] = await Promise.all([getThemeData(), getMenuItems()]);
 
   return (
     <html
       lang="it"
       style={
         {
-          "--background": data.acf.colore_light,
-          "--foreground": data.acf.colore_dark,
+          "--background": themeData.acf.colore_light,
+          "--foreground": themeData.acf.colore_dark,
         } as React.CSSProperties
       }
     >
@@ -56,14 +66,15 @@ export default async function RootLayout({
         precedence="default"
       />
       <body className="antialiased">
-        <ThemeProvider
+        <ClientLayout
           theme={{
-            background: data.acf.colore_light,
-            foreground: data.acf.colore_dark,
+            background: themeData.acf.colore_light,
+            foreground: themeData.acf.colore_dark,
           }}
         >
+          <Menu menuItems={menuItems} />
           {children}
-        </ThemeProvider>
+        </ClientLayout>
       </body>
     </html>
   );
