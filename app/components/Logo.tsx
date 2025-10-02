@@ -3,11 +3,13 @@ import React from 'react';
 interface LogoProps {
   className?: string;
   onClick?: () => void;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
 }
 
-const Logo: React.FC<LogoProps> = ({ className, onClick }) => {
+const Logo: React.FC<LogoProps> = ({ className, onClick, onMouseEnter, onMouseLeave }) => {
   return (
-    <div className={className} onClick={onClick}>
+    <div className={className} onClick={onClick} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
       <svg
         version="1.1"
         xmlns="http://www.w3.org/2000/svg"

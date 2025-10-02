@@ -1,11 +1,11 @@
-import Menu, { MenuItem } from "@/app/components/Menu";
+import Menu, { MenuItem } from "@/components/Menu";
 import React from "react";
 
 async function getMenuItems(): Promise<MenuItem[]> {
   try {
     const res = await fetch(
       `https://vs.ferdinandocambiale.com/wp-json/wp/v2/menu`,
-      { cache: "no-store" }
+      { next: { revalidate: 3600 } }
     );
     if (!res.ok) {
       console.error("Failed to fetch menu items:", res.statusText);
