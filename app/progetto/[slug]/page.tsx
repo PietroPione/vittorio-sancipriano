@@ -26,7 +26,9 @@ export default async function ProjectPage({
 }: {
   params: { slug: string };
 }) {
-  const project = await getProject(params.slug);
+  const { slug } = params;
+
+  const project = await getProject(slug);
 
   if (!project) {
     return <div>Progetto non trovato</div>;
