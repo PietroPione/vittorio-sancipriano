@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Link from "next/link"; // Assicurati che l'import sia corretto
+import Link from "next/link";
 
 interface Progetto {
   id: number;
@@ -16,48 +16,31 @@ interface Progetto {
 
 export default function ProjectsMenu() {
   const [projects, setProjects] = useState<Progetto[]>([]);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await fetch(
-          "https://vs.ferdinandocambiale.com/wp-json/wp/v2/progetto"
-        );
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data: Progetto[] = await response.json();
+        const res = await fetch("https://vs.ferdinandocambiale.com/wp-json/wp/v2/progetto");
+        const data: Progetto[] = await res.json();
         setProjects(data);
-        console.log("Progetti caricati:", data);
-      } catch (err: any) {
+      } catch (err) {
         console.error("Errore fetch progetti:", err);
-        setError(err.message);
       }
     };
-
     fetchProjects();
   }, []);
 
-  if (error) {
-    return <div className="text-red-500">Errore: {error}</div>;
-  }
-
-  if (projects.length === 0) {
-    return <div>Caricamento…</div>;
-  }
+  if (projects.length === 0) return null;
 
   return (
-    <nav className="text-sm font-medium flex flex-wrap gap-2">
+    <nav className="text-sm pt-20 font-medium flex flex-wrap gap-2">
       {projects.map((proj, i) => (
         <React.Fragment key={proj.id}>
-
           <Link
-            href={`/progetto/${proj.slug}`}
+            href={`/${proj.slug}`}
             className="hover:underline"
             dangerouslySetInnerHTML={{
-              __html: `${proj.acf?.titolo_personalizzato || proj.title.rendered} ${proj.acf?.data || ""
-                }`,
+              __html: `${proj.acf?.titolo_personalizzato || proj.title.rendered} ${proj.acf?.data || ""}`,
             }}
           />
           {i < projects.length - 1 && <span className="mx-1">/</span>}

@@ -104,7 +104,7 @@ const ComposerCard: React.FC<ComposerCardProps> = ({ item }) => {
         <motion.div
           key={`txt-${idx}`}
           style={style}
-          className="text-white absolute"
+          className="text-secondary absolute"
           dangerouslySetInnerHTML={{ __html: sub.testo || "" }}
           initial="hidden"
           whileInView="visible"
