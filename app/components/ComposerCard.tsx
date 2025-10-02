@@ -1,13 +1,17 @@
-import React from 'react';
-import ImageCard from './ImageCard';
+"use client";
+import React, { useRef, useState } from "react";
+import { motion } from "framer-motion";
 
 interface SubItem {
-  immagine_o_testo?: 'img' | 'txt' | '';
+  immagine_o_testo?: "img" | "txt" | "";
   immagine?: {
     url?: string;
     alt?: string;
   } | false;
   testo?: string;
+  left?: string;
+  top?: string;
+  larghezza?: string;
 }
 
 interface ComposerItem {
@@ -22,45 +26,104 @@ interface ComposerCardProps {
 }
 
 const ComposerCard: React.FC<ComposerCardProps> = ({ item }) => {
-  if (!item) {
-    return null;
-  }
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [height, setHeight] = useState<number>(800);
 
-  const renderSubItem = (subItem: SubItem | undefined, index: number) => {
-    if (!subItem) {
-      return null;
+  if (!item) return null;
+
+  const subItemsRaw = [
+    item.immagine_1,
+    item.immagine_2,
+    item.immagine_3,
+  ].filter(Boolean) as SubItem[];
+
+  const itemVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { duration: 1.2, ease: "easeOut" },
+    },
+  };
+
+  const renderSubItem = (sub: SubItem, idx: number) => {
+    // Valori per IMMAGINE
+    const leftImg = sub.left ? parseFloat(sub.left) : 0;
+    const topImg = sub.top ? parseFloat(sub.top) : 50;
+    const largImg = sub.larghezza ? parseFloat(sub.larghezza) : 30;
+
+    // Valori per TESTO (usiamo i nuovi predefiniti)
+    const leftTxt = sub.left ? parseFloat(sub.left) : 0;         // Nuovi default: "0"
+    const topTxt = sub.top ? parseFloat(sub.top) : 12.5;       // Nuovi default: "12.5"
+    const largTxt = sub.larghezza ? parseFloat(sub.larghezza) : 100; // Nuovi default: "100"
+
+    if (sub.immagine_o_testo === "img" && sub.immagine && sub.immagine.url) {
+      const url = sub.immagine.url;
+      const alt = sub.immagine.alt || "Project image";
+
+      const style: React.CSSProperties = {
+        position: "absolute",
+        left: `${leftImg}%`,
+        top: `${topImg}%`,
+        width: `${largImg}%`,
+        transform: `translateY(-50%)`,
+      };
+
+      return (
+        <motion.img
+          key={`img-${idx}`}
+          src={url}
+          alt={alt}
+          style={style}
+          className="absolute object-contain"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          variants={itemVariants}
+          onLoad={() => {
+            if (containerRef.current) {
+              const rect = (containerRef.current as HTMLElement).getBoundingClientRect();
+              setHeight(Math.max(height, rect.height));
+            }
+          }}
+        />
+      );
     }
 
-    if (subItem.immagine_o_testo === 'img' && subItem.immagine && subItem.immagine.url) {
-      return <ImageCard key={index} src={subItem.immagine.url} alt={subItem.immagine.alt || 'Project image'} />;
-    }
+    if (sub.immagine_o_testo === "txt" && sub.testo) {
 
-    if (subItem.immagine_o_testo === 'txt' && subItem.testo) {
-      return <div key={index} dangerouslySetInnerHTML={{ __html: subItem.testo }} />;
+      const style: React.CSSProperties = {
+        position: "absolute",
+        left: `${leftTxt}%`,
+        top: `${topTxt}%`,
+        width: `${largTxt}%`, // Applicato anche al testo
+        transform: "translateY(-50%)",
+        // Rimosso 'maxWidth: "40vw"' per rispettare larghezza: "100"
+      };
+
+      return (
+        <motion.div
+          key={`txt-${idx}`}
+          style={style}
+          className="text-white absolute"
+          dangerouslySetInnerHTML={{ __html: sub.testo || "" }}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          variants={itemVariants}
+        />
+      );
     }
 
     return null;
   };
 
-  const subItems = [item.immagine_1, item.immagine_2, item.immagine_3].filter(
-    (sub) => sub && sub.immagine_o_testo
-  );
-
-  if (subItems.length === 0) {
-    return (
-        <div className="border p-4 rounded mb-4">
-            <pre className="bg-gray-800 p-2 rounded text-xs">{JSON.stringify(item, null, 2)}</pre>
-        </div>
-    );
-  }
-
   return (
-    <div className="border p-4 rounded mb-4 grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
-      {subItems.map((subItem, index) => (
-        <div key={index} className="flex-1">
-            {renderSubItem(subItem, index)}
-        </div>
-      ))}
+    <div
+      ref={containerRef}
+      className="relative w-full overflow-visible"
+      style={{ minHeight: `${height}px` }}
+    >
+      {subItemsRaw.map((s, i) => renderSubItem(s, i))}
     </div>
   );
 };

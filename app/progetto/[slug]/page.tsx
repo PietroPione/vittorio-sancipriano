@@ -64,11 +64,11 @@ export default async function ProjectPage({
   const pageTitle = project.acf.titolo_personalizzato || project.title.rendered;
 
   return (
-    <main className="container mx-auto pt-24">
+    <main className=" mx-auto pt-24">
       <Menu menuItems={menuItems} pageTitle={pageTitle} />
 
       <h1
-        className="text-4xl font-bold mb-8"
+        className="sr-only"
         dangerouslySetInnerHTML={{
           __html: pageTitle,
         }}

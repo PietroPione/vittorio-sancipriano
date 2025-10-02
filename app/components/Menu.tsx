@@ -32,14 +32,14 @@ const itemVariants = {
 let inactivityTimer: NodeJS.Timeout | null = null;
 
 const Menu = ({
-  menuItems,
-  pageTitle,
+    menuItems,
+    pageTitle,
 }: {
-  menuItems: MenuItem[];
-  pageTitle?: string;
+    menuItems: MenuItem[];
+    pageTitle?: string;
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const nodeRef = useRef<HTMLDivElement>(null);
+    const [isOpen, setIsOpen] = useState(false);
+    const nodeRef = useRef<HTMLDivElement>(null);
 
     const startCloseTimer = () => {
         if (inactivityTimer) clearTimeout(inactivityTimer);
@@ -65,9 +65,15 @@ const Menu = ({
 
     return (
         <header className="fixed w-full top-4 left-0 right-0 z-50">
-            <div className="container flex justify-between items-center">
-                <Link href="/">
-                    <h1 className="text-white font-bold text-xl" dangerouslySetInnerHTML={{ __html: `Vittorio Sancipriano${pageTitle ? ` - ${pageTitle}` : ""}` }} />
+            <div className="px-4 flex justify-between items-center">
+                <Link href="/" className="w-1/2">
+                    <h1
+                        className="inline-block max-w-full truncate text-secondary text-xs"
+                        dangerouslySetInnerHTML={{
+                            __html: `Vittorio Sancipriano${pageTitle ? ` - ${pageTitle}` : ""}`,
+                        }}
+                    />
+
                 </Link>
                 <div
                     ref={nodeRef}
@@ -83,7 +89,7 @@ const Menu = ({
                                 exit="closed"
                                 variants={menuVariants}
                                 transition={{ duration: 0.3 }}
-                                className="absolute right-full mr-4 flex flex-col bg-black text-white rounded shadow-lg py-2 px-4"
+                                className="absolute right-full mr-4 flex flex-col text-secondary text-xs py-2 px-4"
                                 onMouseEnter={cancelCloseTimer}  // dentro il menu non chiude
                                 onMouseLeave={startCloseTimer}   // esci → parte timer
                             >
@@ -115,8 +121,7 @@ const Menu = ({
 
                     {/* Logo toggle */}
                     <Logo
-                        className={`w-10 h-10 text-white cursor-pointer transition-transform ${isOpen ? "rotate-90" : ""
-                            }`}
+                        className={`w-6 h-6 text-secondary cursor-pointer `}
                         onClick={() => setIsOpen(!isOpen)}
                         onMouseEnter={cancelCloseTimer} // sul logo non chiude
                         onMouseLeave={startCloseTimer}  // se lasci il logo parte countdown
