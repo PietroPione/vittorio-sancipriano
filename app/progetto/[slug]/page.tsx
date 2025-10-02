@@ -2,6 +2,8 @@ import React from "react";
 import ComposerCard from "@/components/ComposerCard";
 import Menu, { MenuItem } from "@/components/Menu";
 
+export const dynamic = 'force-dynamic';
+
 interface Progetto {
   id: number;
   slug: string;
