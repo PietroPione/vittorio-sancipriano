@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import ClientLayout from "@/app/components/ClientLayout";
+import ClientLayout from "@/components/ClientLayout";
 
 type ThemeOptions = {
   colore_dark: string;
@@ -15,7 +15,7 @@ type ThemeData = {
 
 async function getThemeData(): Promise<ThemeData> {
   const res = await fetch('https://vs.ferdinandocambiale.com/wp-json/wp/v2/options', {
-    cache: 'no-store'
+    next: { revalidate: 3600 }
   });
 
   if (!res.ok) {

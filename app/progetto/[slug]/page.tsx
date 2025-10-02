@@ -1,4 +1,6 @@
 import React from "react";
+import ComposerCard from "@/components/ComposerCard";
+import Menu, { MenuItem } from "@/components/Menu";
 
 interface Progetto {
   id: number;
@@ -12,13 +14,27 @@ interface Progetto {
 
 async function getProject(slug: string): Promise<Progetto | null> {
   const res = await fetch(
-    `https://vs.ferdinandocambiale.com/wp-json/wp/v2/progetto?slug=${slug}`
+    `https://vs.ferdinandocambiale.com/wp-json/wp/v2/progetto?slug=${slug}`,
+    { next: { revalidate: 3600 } }
   );
   if (!res.ok) {
     return null;
   }
   const projects: Progetto[] = await res.json();
   return projects[0] || null;
+}
+
+async function getMenuItems(): Promise<MenuItem[]> {
+  try {
+    const res = await fetch(
+      `https://vs.ferdinandocambiale.com/wp-json/wp/v2/menu`,
+      { next: { revalidate: 3600 } }
+    );
+    if (!res.ok) return [];
+    return res.json();
+  } catch {
+    return [];
+  }
 }
 
 export default async function ProjectPage({
@@ -28,32 +44,31 @@ export default async function ProjectPage({
 }) {
   const { slug } = params;
 
-  const project = await getProject(slug);
+  const [project, menuItems] = await Promise.all([
+    getProject(slug),
+    getMenuItems(),
+  ]);
 
   if (!project) {
     return <div>Progetto non trovato</div>;
   }
 
+  const pageTitle = project.acf.titolo_personalizzato || project.title.rendered;
+
   return (
-    <main className="container mx-auto pt-24 text-white">
+    <main className="container mx-auto pt-24">
+      <Menu menuItems={menuItems} pageTitle={pageTitle} />
       <h1
         className="text-4xl font-bold mb-8"
         dangerouslySetInnerHTML={{
-          __html:
-            project.acf.titolo_personalizzato || project.title.rendered,
+          __html: pageTitle,
         }}
       />
       <div className="space-y-8">
-        {project.acf.composer.map((item, index) => (
-          <div key={index} className="border p-4 rounded">
-            <h2 className="text-2xl font-bold mb-2">
-              Composer Item {index + 1}
-            </h2>
-            <pre className="bg-gray-800 p-2 rounded">
-              {JSON.stringify(item, null, 2)}
-            </pre>
-          </div>
-        ))}
+        {project.acf.composer &&
+          project.acf.composer.map((item, index) => (
+            <ComposerCard key={index} item={item} />
+          ))}
       </div>
     </main>
   );
