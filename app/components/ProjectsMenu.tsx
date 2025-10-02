@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 
 interface Progetto {
   id: number;
@@ -50,13 +51,16 @@ export default function ProjectsMenu() {
     <nav className="text-sm font-medium flex flex-wrap gap-2">
       {projects.map((proj, i) => (
         <React.Fragment key={proj.id}>
-          <a
-            href={proj.link}
-            className="hover:underline"
-            dangerouslySetInnerHTML={{
-              __html: `${proj.acf?.titolo_personalizzato || proj.title.rendered} ${proj.acf?.data || ""}`,
-            }}
-          />
+          <Link href={`/progetto/${proj.slug}`} legacyBehavior>
+            <a
+              className="hover:underline"
+              dangerouslySetInnerHTML={{
+                __html: `${proj.acf?.titolo_personalizzato || proj.title.rendered} ${
+                  proj.acf?.data || ""
+                }`,
+              }}
+            />
+          </Link>
           {i < projects.length - 1 && <span className="mx-1">/</span>}
         </React.Fragment>
       ))}

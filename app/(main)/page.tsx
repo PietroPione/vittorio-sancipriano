@@ -1,4 +1,4 @@
-import ProjectsMenu from "./components/ProjectsMenu";
+import ProjectsMenu from "../components/ProjectsMenu";
 
 
 export default function Home() {

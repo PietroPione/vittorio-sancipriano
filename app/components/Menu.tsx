@@ -31,9 +31,15 @@ const itemVariants = {
 
 let inactivityTimer: NodeJS.Timeout | null = null;
 
-const Menu = ({ menuItems }: { menuItems: MenuItem[] }) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const nodeRef = useRef<HTMLDivElement>(null);
+const Menu = ({
+  menuItems,
+  pageTitle,
+}: {
+  menuItems: MenuItem[];
+  pageTitle?: string;
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const nodeRef = useRef<HTMLDivElement>(null);
 
     const startCloseTimer = () => {
         if (inactivityTimer) clearTimeout(inactivityTimer);
@@ -61,7 +67,7 @@ const Menu = ({ menuItems }: { menuItems: MenuItem[] }) => {
         <header className="fixed w-full top-4 left-0 right-0 z-50">
             <div className="container flex justify-between items-center">
                 <Link href="/">
-                    <h1 className="text-white font-bold text-xl">Vittorio Sancipriano</h1>
+                    <h1 className="text-white font-bold text-xl" dangerouslySetInnerHTML={{ __html: `Vittorio Sancipriano${pageTitle ? ` - ${pageTitle}` : ""}` }} />
                 </Link>
                 <div
                     ref={nodeRef}
