@@ -1,8 +1,10 @@
 import React from "react";
+import { notFound } from "next/navigation";
+
 import ComposerCard from "@/components/ComposerCard";
 import Menu, { MenuItem } from "@/components/Menu";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 interface Progetto {
   id: number;
@@ -14,16 +16,23 @@ interface Progetto {
   };
 }
 
-async function getProject(slug: string): Promise<Progetto | null> {
+async function getProject(slug: string): Promise<Progetto> {
   const res = await fetch(
     `https://vs.ferdinandocambiale.com/wp-json/wp/v2/progetto?slug=${slug}`,
     { next: { revalidate: 3600 } }
   );
+
   if (!res.ok) {
-    return null;
+    notFound();
   }
+
   const projects: Progetto[] = await res.json();
-  return projects[0] || null;
+
+  if (!projects || projects.length === 0) {
+    notFound();
+  }
+
+  return projects[0];
 }
 
 async function getMenuItems(): Promise<MenuItem[]> {
@@ -32,6 +41,7 @@ async function getMenuItems(): Promise<MenuItem[]> {
       `https://vs.ferdinandocambiale.com/wp-json/wp/v2/menu`,
       { next: { revalidate: 3600 } }
     );
+
     if (!res.ok) return [];
     return res.json();
   } catch {
@@ -42,30 +52,28 @@ async function getMenuItems(): Promise<MenuItem[]> {
 export default async function ProjectPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const { slug } = params;
+  const { slug } = await params;
 
   const [project, menuItems] = await Promise.all([
     getProject(slug),
     getMenuItems(),
   ]);
 
-  if (!project) {
-    return <div>Progetto non trovato</div>;
-  }
-
   const pageTitle = project.acf.titolo_personalizzato || project.title.rendered;
 
   return (
     <main className="container mx-auto pt-24">
       <Menu menuItems={menuItems} pageTitle={pageTitle} />
+
       <h1
         className="text-4xl font-bold mb-8"
         dangerouslySetInnerHTML={{
           __html: pageTitle,
         }}
       />
+
       <div className="space-y-8">
         {project.acf.composer &&
           project.acf.composer.map((item, index) => (
