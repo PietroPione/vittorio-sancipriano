@@ -18,10 +18,8 @@ export default function ClientLayout({
 }) {
     return (
         <ProjectPreviewProvider>
-            <ThemeProvider theme={theme}>
-                {children}
-                <ProjectPreview />
-            </ThemeProvider>
+            <ThemeProvider theme={theme}>{children}</ThemeProvider>
+            <ProjectPreview />
         </ProjectPreviewProvider>
     );
 }

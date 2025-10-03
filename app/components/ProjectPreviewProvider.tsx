@@ -1,19 +1,20 @@
 "use client";
 
 import React, { createContext, useState, useContext, ReactNode } from "react";
+import { Progetto } from "@/types";
 
 interface ProjectPreviewContextType {
-  previewSlug: string | null;
-  setPreviewSlug: (slug: string | null) => void;
+  previewProject: Progetto | null;
+  setPreviewProject: (project: Progetto | null) => void;
 }
 
 const ProjectPreviewContext = createContext<ProjectPreviewContextType | undefined>(undefined);
 
 export const ProjectPreviewProvider = ({ children }: { children: ReactNode }) => {
-  const [previewSlug, setPreviewSlug] = useState<string | null>(null);
+  const [previewProject, setPreviewProject] = useState<Progetto | null>(null);
 
   return (
-    <ProjectPreviewContext.Provider value={{ previewSlug, setPreviewSlug }}>
+    <ProjectPreviewContext.Provider value={{ previewProject, setPreviewProject }}>
       {children}
     </ProjectPreviewContext.Provider>
   );

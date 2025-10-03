@@ -1,6 +1,9 @@
 "use client";
 import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
+
+const MotionImage = motion(Image);
 
 interface SubItem {
   immagine_o_testo?: "img" | "txt" | "";
@@ -69,10 +72,12 @@ const ComposerCard: React.FC<ComposerCardProps> = ({ item, onImageClick }) => {
       };
 
       return (
-        <motion.img
+        <MotionImage
           key={`img-${idx}`}
           src={url}
           alt={alt}
+          width={1200}
+          height={800}
           style={style}
           className="absolute object-contain"
           onClick={() => onImageClick(url)}
@@ -80,12 +85,6 @@ const ComposerCard: React.FC<ComposerCardProps> = ({ item, onImageClick }) => {
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
           variants={itemVariants}
-          onLoad={() => {
-            if (containerRef.current) {
-              const rect = (containerRef.current as HTMLElement).getBoundingClientRect();
-              setHeight(Math.max(height, rect.height));
-            }
-          }}
         />
       );
     }
