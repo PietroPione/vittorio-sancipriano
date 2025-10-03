@@ -43,14 +43,13 @@ const Menu = ({
 
     const startCloseTimer = () => {
         if (inactivityTimer) clearTimeout(inactivityTimer);
-        inactivityTimer = setTimeout(() => setIsOpen(false), 1000); // chiude dopo 1s
+        inactivityTimer = setTimeout(() => setIsOpen(false), 1000);
     };
 
     const cancelCloseTimer = () => {
         if (inactivityTimer) clearTimeout(inactivityTimer);
     };
 
-    // Chiudi se clicchi fuori
     useEffect(() => {
         const handleOutsideClick = (e: MouseEvent) => {
             if (nodeRef.current && !nodeRef.current.contains(e.target as Node)) {
@@ -68,18 +67,18 @@ const Menu = ({
             <div className="px-4 flex justify-between items-center">
                 <Link href="/" className="w-1/2">
                     <h1
-                        className="inline-block max-w-full truncate text-secondary text-xs"
+                        // Titolo: Cambia colore usando la variabile --foreground
+                        className="inline-block max-w-full truncate text-[var(--foreground)] text-xs"
                         dangerouslySetInnerHTML={{
                             __html: `Vittorio Sancipriano${pageTitle ? ` - ${pageTitle}` : ""}`,
                         }}
                     />
-
                 </Link>
                 <div
                     ref={nodeRef}
                     className="relative flex items-center"
-                    onMouseLeave={startCloseTimer}  // appena esci parte countdown
-                    onMouseEnter={cancelCloseTimer} // se rientri annulla countdown
+                    onMouseLeave={startCloseTimer}
+                    onMouseEnter={cancelCloseTimer}
                 >
                     <AnimatePresence>
                         {isOpen && (
@@ -89,9 +88,10 @@ const Menu = ({
                                 exit="closed"
                                 variants={menuVariants}
                                 transition={{ duration: 0.3 }}
-                                className="absolute right-full mr-4 flex flex-col text-secondary text-xs py-2 px-4"
-                                onMouseEnter={cancelCloseTimer}  // dentro il menu non chiude
-                                onMouseLeave={startCloseTimer}   // esci → parte timer
+                                // Contenitore Menu: Aggiunge BG e cambia colore testo usando le variabili
+                                className="absolute right-full mr-4 flex flex-col text-[var(--foreground)] bg-[var(--background)] text-xs py-2 px-4 shadow-lg rounded-md"
+                                onMouseEnter={cancelCloseTimer}
+                                onMouseLeave={startCloseTimer}
                             >
                                 <motion.ul
                                     className="flex flex-row space-x-2"
@@ -108,6 +108,7 @@ const Menu = ({
                                         >
                                             <Link
                                                 href={item.url}
+                                                // Link: hover usa text-primary (che è già dinamico tramite tailwind.config.ts)
                                                 className="hover:text-primary whitespace-nowrap"
                                             >
                                                 {item.title}
@@ -119,12 +120,12 @@ const Menu = ({
                         )}
                     </AnimatePresence>
 
-                    {/* Logo toggle */}
+                    {/* Logo toggle: Cambia colore usando la variabile --foreground */}
                     <Logo
-                        className={`w-6 h-6 text-secondary cursor-pointer `}
+                        className={`w-6 h-6 text-[var(--foreground)] cursor-pointer `}
                         onClick={() => setIsOpen(!isOpen)}
-                        onMouseEnter={cancelCloseTimer} // sul logo non chiude
-                        onMouseLeave={startCloseTimer}  // se lasci il logo parte countdown
+                        onMouseEnter={cancelCloseTimer}
+                        onMouseLeave={startCloseTimer}
                     />
                 </div>
             </div>

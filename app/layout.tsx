@@ -1,3 +1,5 @@
+import ThemeToggle from "@/components/ThemeToggle";
+
 import type { Metadata } from "next";
 import "./globals.css";
 import ClientLayout from "@/components/ClientLayout";
@@ -14,24 +16,37 @@ type ThemeData = {
   acf: ThemeOptions;
 };
 
-
 async function getThemeData(): Promise<ThemeData> {
-  const res = await fetch('https://vs.ferdinandocambiale.com/wp-json/wp/v2/options', {
-    next: { revalidate: 3600 }
+  const res = await fetch("https://vs.ferdinandocambiale.com/wp-json/wp/v2/options", {
+    next: { revalidate: 3600 },
   });
 
   if (!res.ok) {
     console.error("Errore nel fetching delle opzioni del tema:", res.statusText);
-    return { acf: { colore_dark: '#333333', colore_light: '#ffffff', dimensione_data: '2', dimensione_titoli: '3' } };
+    return {
+      acf: {
+        colore_dark: "#333333",
+        colore_light: "#ffffff",
+        dimensione_data: "2",
+        dimensione_titoli: "3",
+      },
+    };
   }
 
   const data = await res.json();
 
-  if (data && typeof data === 'object') {
+  if (data && typeof data === "object") {
     return { acf: data as ThemeOptions };
   }
 
-  return { acf: { colore_dark: '#333333', colore_light: '#ffffff', dimensione_data: '2', dimensione_titoli: '3' } };
+  return {
+    acf: {
+      colore_dark: "#333333",
+      colore_light: "#ffffff",
+      dimensione_data: "2",
+      dimensione_titoli: "3",
+    },
+  };
 }
 
 export default async function RootLayout({
@@ -70,6 +85,7 @@ export default async function RootLayout({
           }}
         >
           {children}
+          <ThemeToggle /> {/* 👈 aggiunto qui */}
         </ClientLayout>
       </body>
     </html>
@@ -78,5 +94,6 @@ export default async function RootLayout({
 
 export const metadata: Metadata = {
   title: "Vittorio Sancipriano",
-  description: "Being in love with art his whole life, Sancipriano first joined the Photography scene in 2010 as a reportage photographer; his early work includes stories from Morocco, Russia, Mongolia, Palestine.",
+  description:
+    "Being in love with art his whole life, Sancipriano first joined the Photography scene in 2010 as a reportage photographer; his early work includes stories from Morocco, Russia, Mongolia, Palestine.",
 };

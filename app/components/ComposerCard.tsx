@@ -1,7 +1,6 @@
 "use client";
 import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
-import FullScreenSlider from "./FullScreenSlider";
 
 interface SubItem {
   immagine_o_testo?: "img" | "txt" | "";
@@ -24,13 +23,12 @@ interface ComposerItem {
 
 interface ComposerCardProps {
   item: ComposerItem;
+  onImageClick: (src: string) => void;
 }
 
-const ComposerCard: React.FC<ComposerCardProps> = ({ item }) => {
+const ComposerCard: React.FC<ComposerCardProps> = ({ item, onImageClick }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState<number>(800);
-  const [isSliderOpen, setIsSliderOpen] = useState(false);
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   if (!item) return null;
 
@@ -39,24 +37,6 @@ const ComposerCard: React.FC<ComposerCardProps> = ({ item }) => {
     item.immagine_2,
     item.immagine_3,
   ].filter(Boolean) as SubItem[];
-
-  const imagesForSlider = subItemsRaw
-    .filter(
-      (sub) => sub.immagine_o_testo === "img" && sub.immagine && sub.immagine.url
-    )
-    .map((sub) => ({
-      src: sub.immagine!.url!,
-      alt: sub.immagine!.alt || "Project image",
-    }));
-
-  const handleImageClick = (index: number) => {
-    setSelectedImageIndex(index);
-    setIsSliderOpen(true);
-  };
-
-  const handleCloseSlider = () => {
-    setIsSliderOpen(false);
-  };
 
   const itemVariants = {
     hidden: { opacity: 0 },
@@ -67,17 +47,15 @@ const ComposerCard: React.FC<ComposerCardProps> = ({ item }) => {
   };
 
   const renderSubItem = (sub: SubItem, idx: number) => {
-    // Valori per IMMAGINE
     const leftImg = sub.left ? parseFloat(sub.left) : 0;
     const topImg = sub.top ? parseFloat(sub.top) : 50;
     const largImg = sub.larghezza ? parseFloat(sub.larghezza) : 30;
 
-    // Valori per TESTO (usiamo i nuovi predefiniti)
-    const leftTxt = sub.left ? parseFloat(sub.left) : 0;         // Nuovi default: "0"
-    const topTxt = sub.top ? parseFloat(sub.top) : 12.5;       // Nuovi default: "12.5"
-    const largTxt = sub.larghezza ? parseFloat(sub.larghezza) : 100; // Nuovi default: "100"
+    const leftTxt = sub.left ? parseFloat(sub.left) : 0;
+    const topTxt = sub.top ? parseFloat(sub.top) : 12.5;
+    const largTxt = sub.larghezza ? parseFloat(sub.larghezza) : 100;
 
-    if (sub.immagine_o_testo === "img" && sub.immagine && sub.immagine.url) {
+    if (sub.immagine_o_testo === "img" && sub.immagine?.url) {
       const url = sub.immagine.url;
       const alt = sub.immagine.alt || "Project image";
 
@@ -90,8 +68,6 @@ const ComposerCard: React.FC<ComposerCardProps> = ({ item }) => {
         cursor: "pointer",
       };
 
-      const imageIndex = imagesForSlider.findIndex((img) => img.src === url);
-
       return (
         <motion.img
           key={`img-${idx}`}
@@ -99,7 +75,7 @@ const ComposerCard: React.FC<ComposerCardProps> = ({ item }) => {
           alt={alt}
           style={style}
           className="absolute object-contain"
-          onClick={() => handleImageClick(imageIndex)}
+          onClick={() => onImageClick(url)}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
@@ -115,21 +91,20 @@ const ComposerCard: React.FC<ComposerCardProps> = ({ item }) => {
     }
 
     if (sub.immagine_o_testo === "txt" && sub.testo) {
-
       const style: React.CSSProperties = {
         position: "absolute",
         left: `${leftTxt}%`,
         top: `${topTxt}%`,
-        width: `${largTxt}%`, // Applicato anche al testo
+        width: `${largTxt}%`,
         transform: "translateY(-50%)",
-        // Rimosso 'maxWidth: "40vw"' per rispettare larghezza: "100"
+        color: 'var(--foreground)',
       };
 
       return (
         <motion.div
           key={`txt-${idx}`}
           style={style}
-          className="text-secondary absolute"
+          className="absolute"
           dangerouslySetInnerHTML={{ __html: sub.testo || "" }}
           initial="hidden"
           whileInView="visible"
@@ -149,13 +124,6 @@ const ComposerCard: React.FC<ComposerCardProps> = ({ item }) => {
       style={{ minHeight: `${height}px` }}
     >
       {subItemsRaw.map((s, i) => renderSubItem(s, i))}
-      {isSliderOpen && (
-        <FullScreenSlider
-          images={imagesForSlider}
-          initialIndex={selectedImageIndex}
-          onClose={handleCloseSlider}
-        />
-      )}
     </div>
   );
 };
