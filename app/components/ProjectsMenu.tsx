@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useProjectPreview } from "./ProjectPreviewProvider";
 
 interface Progetto {
   id: number;
@@ -16,6 +17,9 @@ interface Progetto {
 
 export default function ProjectsMenu() {
   const [projects, setProjects] = useState<Progetto[]>([]);
+  const { setPreviewSlug } = useProjectPreview();
+  const router = useRouter();
+  const [isHiding, setIsHiding] = useState(false);
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -30,15 +34,39 @@ export default function ProjectsMenu() {
     fetchProjects();
   }, []);
 
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, slug: string) => {
+    e.preventDefault();
+
+    // NASCONDI IMMEDIATAMENTE LA PREVIEW e avvia la transizione del menu
+    setPreviewSlug(null);
+    setIsHiding(true);
+
+    setTimeout(() => {
+      // DOPO LA TRANSIZIONE DEL MENU (300ms) AVVIA LA NAVIGAZIONE
+      router.push(`/${slug}`);
+    }, 300);
+  };
+
   if (projects.length === 0) return null;
 
   return (
-    <nav className="text-sm pt-20 font-medium flex flex-wrap gap-2">
+    <nav
+      // AGGIUNGI pointer-events-none QUANDO NASCOSTO
+      className={`text-sm pt-20 font-medium flex flex-wrap gap-2 transition-opacity duration-300 ${isHiding ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+    >
       {projects.map((proj, i) => (
         <React.Fragment key={proj.id}>
-          <Link
+          <a
             href={`/${proj.slug}`}
-            className="hover:underline"
+            onMouseEnter={() => {
+              setPreviewSlug(proj.slug);
+              router.prefetch(`/${proj.slug}`);
+            }}
+            onMouseLeave={() => {
+              setPreviewSlug(null);
+            }}
+            onClick={(e) => handleClick(e, proj.slug)}
+            className="hover:underline cursor-pointer"
             dangerouslySetInnerHTML={{
               __html: `${proj.acf?.titolo_personalizzato || proj.title.rendered} ${proj.acf?.data || ""}`,
             }}

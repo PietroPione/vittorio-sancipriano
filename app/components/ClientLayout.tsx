@@ -1,6 +1,8 @@
 "use client";
 
 import { ThemeProvider } from "./ThemeProvider";
+import { ProjectPreviewProvider } from "./ProjectPreviewProvider";
+import ProjectPreview from "./ProjectPreview";
 
 type Theme = {
     background: string;
@@ -14,5 +16,12 @@ export default function ClientLayout({
     children: React.ReactNode;
     theme: Theme;
 }) {
-    return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
+    return (
+        <ProjectPreviewProvider>
+            <ThemeProvider theme={theme}>
+                {children}
+                <ProjectPreview />
+            </ThemeProvider>
+        </ProjectPreviewProvider>
+    );
 }
