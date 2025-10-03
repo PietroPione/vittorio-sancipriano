@@ -1,6 +1,7 @@
 "use client";
 import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
+import FullScreenSlider from "./FullScreenSlider";
 
 interface SubItem {
   immagine_o_testo?: "img" | "txt" | "";
@@ -28,6 +29,8 @@ interface ComposerCardProps {
 const ComposerCard: React.FC<ComposerCardProps> = ({ item }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState<number>(800);
+  const [isSliderOpen, setIsSliderOpen] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   if (!item) return null;
 
@@ -36,6 +39,24 @@ const ComposerCard: React.FC<ComposerCardProps> = ({ item }) => {
     item.immagine_2,
     item.immagine_3,
   ].filter(Boolean) as SubItem[];
+
+  const imagesForSlider = subItemsRaw
+    .filter(
+      (sub) => sub.immagine_o_testo === "img" && sub.immagine && sub.immagine.url
+    )
+    .map((sub) => ({
+      src: sub.immagine!.url!,
+      alt: sub.immagine!.alt || "Project image",
+    }));
+
+  const handleImageClick = (index: number) => {
+    setSelectedImageIndex(index);
+    setIsSliderOpen(true);
+  };
+
+  const handleCloseSlider = () => {
+    setIsSliderOpen(false);
+  };
 
   const itemVariants = {
     hidden: { opacity: 0 },
@@ -66,7 +87,10 @@ const ComposerCard: React.FC<ComposerCardProps> = ({ item }) => {
         top: `${topImg}%`,
         width: `${largImg}%`,
         transform: `translateY(-50%)`,
+        cursor: "pointer",
       };
+
+      const imageIndex = imagesForSlider.findIndex((img) => img.src === url);
 
       return (
         <motion.img
@@ -75,6 +99,7 @@ const ComposerCard: React.FC<ComposerCardProps> = ({ item }) => {
           alt={alt}
           style={style}
           className="absolute object-contain"
+          onClick={() => handleImageClick(imageIndex)}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
@@ -124,6 +149,13 @@ const ComposerCard: React.FC<ComposerCardProps> = ({ item }) => {
       style={{ minHeight: `${height}px` }}
     >
       {subItemsRaw.map((s, i) => renderSubItem(s, i))}
+      {isSliderOpen && (
+        <FullScreenSlider
+          images={imagesForSlider}
+          initialIndex={selectedImageIndex}
+          onClose={handleCloseSlider}
+        />
+      )}
     </div>
   );
 };
