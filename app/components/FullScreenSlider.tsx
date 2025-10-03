@@ -45,7 +45,7 @@ const FullScreenSlider: React.FC<FullScreenSliderProps> = ({ images, initialInde
 
   const currentImage = images[currentIndex];
   const bgColor = theme === 'primary' ? 'bg-primary' : 'bg-secondary';
-  const textColor = theme === 'primary' ? 'text-primary-foreground' : 'text-secondary-foreground'; // Assuming foreground colors are defined
+  const textColor = theme === 'primary' ? 'text-secondary' : 'text-primary';
 
   return (
     <div

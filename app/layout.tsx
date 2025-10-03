@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import ClientLayout from "@/components/ClientLayout";
+import React from "react";
 
 type ThemeOptions = {
   colore_dark: string;
@@ -12,6 +13,7 @@ type ThemeOptions = {
 type ThemeData = {
   acf: ThemeOptions;
 };
+
 
 async function getThemeData(): Promise<ThemeData> {
   const res = await fetch('https://vs.ferdinandocambiale.com/wp-json/wp/v2/options', {
@@ -38,14 +40,20 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const themeData = await getThemeData();
+  const theme = themeData.acf;
+
+  console.log("Colore Light from API (Primary):", theme.colore_light);
+  console.log("Colore Dark from API (Secondary):", theme.colore_dark);
 
   return (
     <html
       lang="it"
       style={
         {
-          "--background": themeData.acf.colore_light,
-          "--foreground": themeData.acf.colore_dark,
+          "--color-primary": theme.colore_light,
+          "--color-secondary": theme.colore_dark,
+          "--background": theme.colore_light,
+          "--foreground": theme.colore_dark,
         } as React.CSSProperties
       }
     >
@@ -57,8 +65,8 @@ export default async function RootLayout({
       <body className="antialiased">
         <ClientLayout
           theme={{
-            background: themeData.acf.colore_light,
-            foreground: themeData.acf.colore_dark,
+            background: theme.colore_light,
+            foreground: theme.colore_dark,
           }}
         >
           {children}
@@ -67,7 +75,6 @@ export default async function RootLayout({
     </html>
   );
 }
-
 
 export const metadata: Metadata = {
   title: "Vittorio Sancipriano",

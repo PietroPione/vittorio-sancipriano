@@ -1,9 +1,8 @@
 @import "tailwindcss";
 
-@theme {
+:root {
   --background: #ffffff;
   --foreground: #171717;
-  --primary: #0070f3;
   --font-sans: "nocturne-serif-lights", serif;
 }
 
@@ -13,8 +12,24 @@ body {
   font-family: var(--font-sans);
 }
 
+.text-primary {
+  color: var(--color-primary);
+}
+
+.text-secondary {
+  color: var(--color-secondary);
+}
+
 .text-white {
   color: #fff;
+}
+
+.bg-primary {
+  background-color: var(--color-primary);
+}
+
+.bg-secondary {
+  background-color: var(--color-secondary);
 }
 
 @utility container {
