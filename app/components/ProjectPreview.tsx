@@ -50,9 +50,9 @@ export default function ProjectPreview() {
 
   return (
     <div
-      className={`fixed inset-0 -z-10 transition-opacity duration-300 ${
-        isVisible ? "opacity-100" : "opacity-0"
-      }`}
+      // Utilizziamo top-12 (48px) per superare l'altezza calcolata di 40px
+      className={`fixed left-0 right-0 bottom-0 top-12 -z-10 transition-opacity duration-300 ${isVisible ? "opacity-100" : "opacity-0"
+        }`}
       style={{ pointerEvents: isVisible ? "auto" : "none" }}
     >
       {project && <ProjectContent project={project} />}

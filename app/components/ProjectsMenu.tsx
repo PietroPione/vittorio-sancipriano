@@ -36,16 +36,24 @@ export default function ProjectsMenu() {
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, slug: string) => {
     e.preventDefault();
+
+    // NASCONDI IMMEDIATAMENTE LA PREVIEW e avvia la transizione del menu
+    setPreviewSlug(null);
     setIsHiding(true);
+
     setTimeout(() => {
-        router.push(`/${slug}`);
+      // DOPO LA TRANSIZIONE DEL MENU (300ms) AVVIA LA NAVIGAZIONE
+      router.push(`/${slug}`);
     }, 300);
   };
 
   if (projects.length === 0) return null;
 
   return (
-    <nav className={`text-sm pt-20 font-medium flex flex-wrap gap-2 transition-opacity duration-300 ${isHiding ? 'opacity-0' : 'opacity-100'}`}>
+    <nav
+      // AGGIUNGI pointer-events-none QUANDO NASCOSTO
+      className={`text-sm pt-20 font-medium flex flex-wrap gap-2 transition-opacity duration-300 ${isHiding ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+    >
       {projects.map((proj, i) => (
         <React.Fragment key={proj.id}>
           <a
