@@ -1,6 +1,7 @@
 "use client";
 import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 interface SubItem {
   immagine_o_testo?: "img" | "txt" | "";
@@ -24,9 +25,10 @@ interface ComposerItem {
 interface ComposerCardProps {
   item: ComposerItem;
   onImageClick: (src: string) => void;
+  isPreview?: boolean;
 }
 
-const ComposerCard: React.FC<ComposerCardProps> = ({ item, onImageClick }) => {
+const ComposerCard: React.FC<ComposerCardProps> = ({ item, onImageClick, isPreview = false }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState<number>(800);
 
@@ -59,7 +61,7 @@ const ComposerCard: React.FC<ComposerCardProps> = ({ item, onImageClick }) => {
       const url = sub.immagine.url;
       const alt = sub.immagine.alt || "Project image";
 
-      const style: React.CSSProperties = {
+      const containerStyle: React.CSSProperties = {
         position: "absolute",
         left: `${leftImg}%`,
         top: `${topImg}%`,
@@ -68,26 +70,44 @@ const ComposerCard: React.FC<ComposerCardProps> = ({ item, onImageClick }) => {
         cursor: "pointer",
       };
 
-      return (
-        <motion.img
-          key={`img-${idx}`}
-          src={url}
-          alt={alt}
-          style={style}
-          className="absolute object-contain"
-          onClick={() => onImageClick(url)}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          variants={itemVariants}
-          onLoad={() => {
-            if (containerRef.current) {
-              const rect = (containerRef.current as HTMLElement).getBoundingClientRect();
-              setHeight(Math.max(height, rect.height));
-            }
-          }}
-        />
-      );
+      if (isPreview) {
+        return (
+          <div
+            key={`img-${idx}`}
+            style={containerStyle}
+            className="relative aspect-auto"
+          >
+            <img
+              src={url}
+              alt={alt}
+              style={{ width: '100%', height: 'auto' }}
+              className="select-none"
+              onClick={() => onImageClick(url)}
+            />
+          </div>
+        );
+      } else {
+        return (
+          <motion.img
+            key={`img-${idx}`}
+            src={url}
+            alt={alt}
+            style={containerStyle}
+            className="absolute object-contain"
+            onClick={() => onImageClick(url)}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={itemVariants}
+            onLoad={() => {
+              if (containerRef.current) {
+                const rect = (containerRef.current as HTMLElement).getBoundingClientRect();
+                setHeight(Math.max(height, rect.height));
+              }
+            }}
+          />
+        );
+      }
     }
 
     if (sub.immagine_o_testo === "txt" && sub.testo) {
@@ -100,18 +120,29 @@ const ComposerCard: React.FC<ComposerCardProps> = ({ item, onImageClick }) => {
         color: 'var(--foreground)',
       };
 
-      return (
-        <motion.div
-          key={`txt-${idx}`}
-          style={style}
-          className="absolute"
-          dangerouslySetInnerHTML={{ __html: sub.testo || "" }}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          variants={itemVariants}
-        />
-      );
+      if (isPreview) {
+        return (
+          <div
+            key={`txt-${idx}`}
+            style={style}
+            className="absolute"
+            dangerouslySetInnerHTML={{ __html: sub.testo || "" }}
+          />
+        );
+      } else {
+        return (
+          <motion.div
+            key={`txt-${idx}`}
+            style={style}
+            className="absolute"
+            dangerouslySetInnerHTML={{ __html: sub.testo || "" }}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={itemVariants}
+          />
+        );
+      }
     }
 
     return null;

@@ -16,6 +16,7 @@ interface Progetto {
 
 interface ProjectContentProps {
     project: Progetto;
+    isPreview?: boolean;
 }
 
 const extractAllImages = (composer: any[]): { src: string; alt: string }[] => {
@@ -38,10 +39,12 @@ const extractAllImages = (composer: any[]): { src: string; alt: string }[] => {
     return allImages;
 };
 
-const ProjectContent: React.FC<ProjectContentProps> = ({ project }) => {
+const ProjectContent: React.FC<ProjectContentProps> = ({ project, isPreview = false }) => {
     useEffect(() => {
-        document.body.style.overflow = "auto";
-    }, []);
+        if (!isPreview) {
+            document.body.style.overflow = "auto";
+        }
+    }, [isPreview]);
 
     const allImages = extractAllImages(project.acf.composer);
 
@@ -64,6 +67,7 @@ const ProjectContent: React.FC<ProjectContentProps> = ({ project }) => {
                         key={index}
                         item={item}
                         onImageClick={handleImageClick}
+                        isPreview={isPreview}
                     />
                 ))}
             </div>
