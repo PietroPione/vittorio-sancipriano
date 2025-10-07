@@ -1,9 +1,12 @@
 "use client";
 
+"use client";
+
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Logo from "./Logo";
 import Link from "next/link";
+import { useTitle } from "./TitleContext";
 
 export interface MenuItem {
     ID: number;
@@ -33,11 +36,10 @@ let inactivityTimer: NodeJS.Timeout | null = null;
 
 const Menu = ({
     menuItems,
-    pageTitle,
 }: {
     menuItems: MenuItem[];
-    pageTitle?: string;
 }) => {
+    const { pageTitle, setPageTitle } = useTitle();
     const [isOpen, setIsOpen] = useState(false);
     const nodeRef = useRef<HTMLDivElement>(null);
 
@@ -65,7 +67,7 @@ const Menu = ({
     return (
         <header className="fixed w-full top-4 left-0 right-0 z-50">
             <div className="px-4 flex justify-between items-center">
-                <Link href="/" className="w-1/2">
+                <Link href="/" className="w-1/2" onClick={() => setPageTitle("")}>
                     <h1
                         // Titolo: Cambia colore usando la variabile --foreground
                         className="inline-block max-w-full truncate text-[var(--foreground)] text-xs"

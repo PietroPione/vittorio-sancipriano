@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ComposerCard from "@/components/ComposerCard";
 import FullScreenSlider from "@/components/FullScreenSlider";
 
@@ -39,6 +39,10 @@ const extractAllImages = (composer: any[]): { src: string; alt: string }[] => {
 };
 
 const ProjectContent: React.FC<ProjectContentProps> = ({ project }) => {
+    useEffect(() => {
+        document.body.style.overflow = "auto";
+    }, []);
+
     const allImages = extractAllImages(project.acf.composer);
 
     const [isSliderOpen, setIsSliderOpen] = useState(false);

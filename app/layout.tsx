@@ -1,4 +1,6 @@
 import ThemeToggle from "@/components/ThemeToggle";
+import Menu, { MenuItem } from "@/components/Menu";
+import { TitleProvider } from "@/components/TitleContext";
 
 import type { Metadata } from "next";
 import "./globals.css";
@@ -15,6 +17,23 @@ type ThemeOptions = {
 type ThemeData = {
   acf: ThemeOptions;
 };
+
+async function getMenuItems(): Promise<MenuItem[]> {
+  try {
+    const res = await fetch(
+      `https://vs.ferdinandocambiale.com/wp-json/wp/v2/menu`,
+      { next: { revalidate: 3600 } }
+    );
+    if (!res.ok) {
+      console.error("Failed to fetch menu items:", res.statusText);
+      return [];
+    }
+    return res.json();
+  } catch (error) {
+    console.error("Error fetching menu items:", error);
+    return [];
+  }
+}
 
 async function getThemeData(): Promise<ThemeData> {
   const res = await fetch("https://vs.ferdinandocambiale.com/wp-json/wp/v2/options", {
@@ -54,7 +73,10 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const themeData = await getThemeData();
+  const [themeData, menuItems] = await Promise.all([
+    getThemeData(),
+    getMenuItems(),
+  ]);
   const theme = themeData.acf;
 
   console.log("Colore Light from API (Primary):", theme.colore_light);
@@ -78,15 +100,18 @@ export default async function RootLayout({
         precedence="default"
       />
       <body className="antialiased">
-        <ClientLayout
-          theme={{
-            background: theme.colore_light,
-            foreground: theme.colore_dark,
-          }}
-        >
-          {children}
-          <ThemeToggle /> {/* 👈 aggiunto qui */}
-        </ClientLayout>
+        <TitleProvider>
+          <ClientLayout
+            theme={{
+              background: theme.colore_light,
+              foreground: theme.colore_dark,
+            }}
+          >
+            <Menu menuItems={menuItems} />
+            {children}
+            <ThemeToggle />
+          </ClientLayout>
+        </TitleProvider>
       </body>
     </html>
   );
