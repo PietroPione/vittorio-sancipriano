@@ -1,6 +1,7 @@
 "use client";
 import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 interface SubItem {
   immagine_o_testo?: "img" | "txt" | "";
@@ -60,7 +61,7 @@ const ComposerCard: React.FC<ComposerCardProps> = ({ item, onImageClick, isPrevi
       const url = sub.immagine.url;
       const alt = sub.immagine.alt || "Project image";
 
-      const style: React.CSSProperties = {
+      const containerStyle: React.CSSProperties = {
         position: "absolute",
         left: `${leftImg}%`,
         top: `${topImg}%`,
@@ -71,14 +72,19 @@ const ComposerCard: React.FC<ComposerCardProps> = ({ item, onImageClick, isPrevi
 
       if (isPreview) {
         return (
-          <img
+          <div
             key={`img-${idx}`}
-            src={url}
-            alt={alt}
-            style={style}
-            className="absolute object-contain"
-            onClick={() => onImageClick(url)}
-          />
+            style={containerStyle}
+            className="relative aspect-auto"
+          >
+            <img
+              src={url}
+              alt={alt}
+              style={{ width: '100%', height: 'auto' }}
+              className="select-none"
+              onClick={() => onImageClick(url)}
+            />
+          </div>
         );
       } else {
         return (
@@ -86,7 +92,7 @@ const ComposerCard: React.FC<ComposerCardProps> = ({ item, onImageClick, isPrevi
             key={`img-${idx}`}
             src={url}
             alt={alt}
-            style={style}
+            style={containerStyle}
             className="absolute object-contain"
             onClick={() => onImageClick(url)}
             initial="hidden"

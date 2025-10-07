@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 
 interface ImageCardProps {
   src?: string;
@@ -12,7 +13,14 @@ const ImageCard: React.FC<ImageCardProps> = ({ src, alt }) => {
 
   return (
     <div className="image-card">
-      <img src={src} alt={alt || 'Image'} className="w-full h-auto rounded" />
+      <Image
+        src={src}
+        alt={alt || 'Image'}
+        width={800}
+        height={600}
+        className="w-full h-auto rounded"
+        style={{ objectFit: 'contain' }}
+      />
     </div>
   );
 };
