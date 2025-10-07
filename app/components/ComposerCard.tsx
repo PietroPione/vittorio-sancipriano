@@ -24,9 +24,10 @@ interface ComposerItem {
 interface ComposerCardProps {
   item: ComposerItem;
   onImageClick: (src: string) => void;
+  isPreview?: boolean;
 }
 
-const ComposerCard: React.FC<ComposerCardProps> = ({ item, onImageClick }) => {
+const ComposerCard: React.FC<ComposerCardProps> = ({ item, onImageClick, isPreview = false }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState<number>(800);
 
@@ -68,26 +69,39 @@ const ComposerCard: React.FC<ComposerCardProps> = ({ item, onImageClick }) => {
         cursor: "pointer",
       };
 
-      return (
-        <motion.img
-          key={`img-${idx}`}
-          src={url}
-          alt={alt}
-          style={style}
-          className="absolute object-contain"
-          onClick={() => onImageClick(url)}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          variants={itemVariants}
-          onLoad={() => {
-            if (containerRef.current) {
-              const rect = (containerRef.current as HTMLElement).getBoundingClientRect();
-              setHeight(Math.max(height, rect.height));
-            }
-          }}
-        />
-      );
+      if (isPreview) {
+        return (
+          <img
+            key={`img-${idx}`}
+            src={url}
+            alt={alt}
+            style={style}
+            className="absolute object-contain"
+            onClick={() => onImageClick(url)}
+          />
+        );
+      } else {
+        return (
+          <motion.img
+            key={`img-${idx}`}
+            src={url}
+            alt={alt}
+            style={style}
+            className="absolute object-contain"
+            onClick={() => onImageClick(url)}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={itemVariants}
+            onLoad={() => {
+              if (containerRef.current) {
+                const rect = (containerRef.current as HTMLElement).getBoundingClientRect();
+                setHeight(Math.max(height, rect.height));
+              }
+            }}
+          />
+        );
+      }
     }
 
     if (sub.immagine_o_testo === "txt" && sub.testo) {
@@ -100,18 +114,29 @@ const ComposerCard: React.FC<ComposerCardProps> = ({ item, onImageClick }) => {
         color: 'var(--foreground)',
       };
 
-      return (
-        <motion.div
-          key={`txt-${idx}`}
-          style={style}
-          className="absolute"
-          dangerouslySetInnerHTML={{ __html: sub.testo || "" }}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          variants={itemVariants}
-        />
-      );
+      if (isPreview) {
+        return (
+          <div
+            key={`txt-${idx}`}
+            style={style}
+            className="absolute"
+            dangerouslySetInnerHTML={{ __html: sub.testo || "" }}
+          />
+        );
+      } else {
+        return (
+          <motion.div
+            key={`txt-${idx}`}
+            style={style}
+            className="absolute"
+            dangerouslySetInnerHTML={{ __html: sub.testo || "" }}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={itemVariants}
+          />
+        );
+      }
     }
 
     return null;
