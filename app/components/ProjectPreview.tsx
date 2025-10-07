@@ -12,9 +12,8 @@ export default function ProjectPreview() {
   return (
     <div
       data-testid="project-preview-container"
-      className={`fixed inset-0 z-40 transition-opacity duration-300 ${
-        isVisible ? "opacity-100" : "opacity-0"
-      }`}
+      className={`fixed inset-0 z-40 transition-opacity duration-300 ${isVisible ? "opacity-100" : "opacity-0"
+        }`}
       style={{
         pointerEvents: isVisible ? "auto" : "none",
         backgroundColor: "var(--background)",

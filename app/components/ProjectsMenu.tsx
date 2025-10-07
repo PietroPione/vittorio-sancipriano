@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useProjectPreview } from "./ProjectPreviewProvider";
 
 interface Progetto {
@@ -22,18 +23,27 @@ interface ProjectsMenuProps {
 
 export default function ProjectsMenu({ projects }: ProjectsMenuProps) {
   const { showProject, hideProjectWithDelay } = useProjectPreview();
+  const router = useRouter();
 
-  if (projects.length === 0) return null;
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, slug: string) => {
+    e.preventDefault();
+    showProject(null);
+    router.push(`/${slug}`);
+  };
+
+  // Aggiungi controllo per undefined/null
+  if (!projects || !Array.isArray(projects) || projects.length === 0) return null;
 
   return (
-    <nav className="text-sm pt-20 font-medium flex flex-wrap gap-2">
+    <nav className="text-sm pt-20 font-medium flex flex-wrap gap-2 relative z-50">
       {projects.map((proj, i) => (
         <React.Fragment key={proj.id}>
           <Link
             href={`/${proj.slug}`}
             onMouseEnter={() => showProject(proj)}
             onMouseLeave={hideProjectWithDelay}
-            className="hover:underline cursor-pointer"
+            onClick={(e) => handleClick(e, proj.slug)}
+            className="hover:underline cursor-pointer relative z-50"
           >
             <span
               dangerouslySetInnerHTML={{
@@ -42,7 +52,7 @@ export default function ProjectsMenu({ projects }: ProjectsMenuProps) {
               }}
             />
           </Link>
-          {i < projects.length - 1 && <span className="mx-1">/</span>}
+          {i < projects.length - 1 && <span className="mx-1 relative z-50">/</span>}
         </React.Fragment>
       ))}
     </nav>
