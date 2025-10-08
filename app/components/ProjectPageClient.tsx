@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useEffect } from 'react';
-import { useTitle } from './TitleContext';
-import ProjectContent from './ProjectContent';
+import React, { useEffect } from "react";
+import { useTitle } from "./TitleContext";
+import ProjectContent from "./ProjectContent";
 
 interface Progetto {
   id: number;
@@ -19,14 +19,18 @@ interface ProjectPageClientProps {
   pageTitle: string;
 }
 
-const ProjectPageClient: React.FC<ProjectPageClientProps> = ({ project, pageTitle }) => {
+const ProjectPageClient: React.FC<ProjectPageClientProps> = ({
+  project,
+  pageTitle,
+}) => {
   const { setPageTitle } = useTitle();
 
   useEffect(() => {
     setPageTitle(pageTitle);
   }, [pageTitle, setPageTitle]);
 
-  return <ProjectContent project={project} />;
+  // 🔹 Passa isPreview={false} per la versione “pagina completa”
+  return <ProjectContent project={project} isPreview={false} />;
 };
 
 export default ProjectPageClient;

@@ -39,17 +39,21 @@ const extractAllImages = (composer: any[]): { src: string; alt: string }[] => {
     return allImages;
 };
 
-const ProjectContent: React.FC<ProjectContentProps> = ({ project, isPreview = false }) => {
-    useEffect(() => {
-        if (!isPreview) {
-            document.body.style.overflow = "auto";
-        }
-    }, [isPreview]);
-
+const ProjectContent: React.FC<ProjectContentProps> = ({
+    project,
+    isPreview = false,
+}) => {
     const allImages = extractAllImages(project.acf.composer);
 
     const [isSliderOpen, setIsSliderOpen] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(0);
+
+    useEffect(() => {
+        document.body.style.overflow = isPreview ? "hidden" : "auto";
+        return () => {
+            document.body.style.overflow = "auto";
+        };
+    }, [isPreview]);
 
     const handleImageClick = (src: string) => {
         const idx = allImages.findIndex((img) => img.src === src);
