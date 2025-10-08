@@ -5,8 +5,8 @@ import ComposerCard from "@/components/ComposerCard";
 import FullScreenSlider from "@/components/FullScreenSlider";
 
 interface ComposerItem {
-  select_photo_qty: "1" | "2" | "3";
-  [key: string]: any;
+    select_photo_qty: "1" | "2" | "3";
+    [key: string]: any;
 }
 
 interface Progetto {
@@ -54,7 +54,7 @@ const ProjectContent: React.FC<ProjectContentProps> = ({
     const [selectedIndex, setSelectedIndex] = useState(0);
 
     useEffect(() => {
-        document.body.style.overflow = isPreview ? "hidden" : "auto";
+        // document.body.style.overflow = isPreview ? "hidden" : "auto";
         return () => {
             document.body.style.overflow = "auto";
         };

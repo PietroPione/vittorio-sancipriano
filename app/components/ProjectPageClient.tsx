@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useLayoutEffect } from "react";
 import { useTitle } from "./TitleContext";
 import ProjectContent from "./ProjectContent";
 
@@ -28,12 +28,11 @@ const ProjectPageClient: React.FC<ProjectPageClientProps> = ({
 }) => {
   const { setPageTitle } = useTitle();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setPageTitle(pageTitle);
   }, [pageTitle, setPageTitle]);
 
-  // 🔹 Passa isPreview={false} per la versione “pagina completa”
-  return <ProjectContent project={project} isPreview={false} />;
+  return <ProjectContent project={project} isPreview={true} />;
 };
 
 export default ProjectPageClient;

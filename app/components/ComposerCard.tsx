@@ -3,9 +3,8 @@
 import React from "react";
 import { motion, easeOut } from "framer-motion";
 import Image from "next/image";
-import useMediaQuery from "@/hooks/useMediaQuery"; // Importa l'hook
+import useMediaQuery from "@/hooks/useMediaQuery";
 
-// Interfacce per i dati
 interface SubItem {
   immagine_o_testo?: "img" | "txt" | "";
   immagine?: {
@@ -39,7 +38,7 @@ const ComposerCard: React.FC<ComposerCardProps> = ({
   onImageClick,
   isPreview = false,
 }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)"); // Media query per mobile
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   if (!item) return null;
 
@@ -70,14 +69,13 @@ const ComposerCard: React.FC<ComposerCardProps> = ({
     const motionProps = isPreview
       ? {}
       : {
-          initial: "hidden",
-          whileInView: "visible",
-          viewport: { once: true, amount: 0.2 },
-          variants: itemVariants,
-        };
+        initial: "hidden",
+        whileInView: "visible",
+        viewport: { once: true, amount: 0.2 },
+        variants: itemVariants,
+      };
 
-    // Render per le immagini
-    if (sub.immagine_o_testo === "img" && sub.immagine) {
+    if (sub.immagine_o_testo === "img" && sub.immagine && sub.immagine !== false) {
       const { url, alt, width: imgWidth, height: imgHeight } = sub.immagine;
       if (!url || !imgWidth || !imgHeight) return null;
 
@@ -90,7 +88,7 @@ const ComposerCard: React.FC<ComposerCardProps> = ({
       };
 
       const mobileStyle: React.CSSProperties = {
-        width: "100%", // Le immagini occupano tutta la larghezza su mobile
+        width: "100%",
         marginBottom: "1rem",
       };
 
@@ -108,14 +106,13 @@ const ComposerCard: React.FC<ComposerCardProps> = ({
             width={imgWidth}
             height={imgHeight}
             sizes={isMobileLayout ? "100vw" : `${sub.larghezza || 30}vw`}
-            className="w-full h-auto object-contain select-none"
+            className="w-full h-auto select-none"
             priority={idx < 2}
           />
         </MotionWrapper>
       );
     }
 
-    // Render per il testo
     if (sub.immagine_o_testo === "txt" && sub.testo) {
       const desktopStyle: React.CSSProperties = {
         position: "absolute",
@@ -146,7 +143,6 @@ const ComposerCard: React.FC<ComposerCardProps> = ({
     return null;
   };
 
-  // Layout per Desktop (posizionamento assoluto)
   if (!isMobile) {
     return (
       <div
@@ -158,7 +154,6 @@ const ComposerCard: React.FC<ComposerCardProps> = ({
     );
   }
 
-  // Layout per Mobile (flex column)
   return (
     <div className="flex flex-col items-center w-full py-8">
       {subItems.map((sub, i) => renderSubItem(sub, i, true))}
