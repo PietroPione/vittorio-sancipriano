@@ -18,12 +18,19 @@ const menuVariants = {
     open: {
         opacity: 1,
         x: 0,
-        transition: { staggerChildren: 0.08, delayChildren: 0.1, staggerDirection: -1 },
+        transition: {
+            staggerChildren: 0.07,
+            delayChildren: 0.2,
+            staggerDirection: 1,
+        },
     },
     closed: {
         opacity: 0,
-        x: 50,
-        transition: { staggerChildren: 0.03, staggerDirection: -1 },
+        x: 20,
+        transition: {
+            staggerChildren: 0.05,
+            staggerDirection: -1,
+        },
     },
 };
 
@@ -91,17 +98,28 @@ const Menu = ({
                                 variants={menuVariants}
                                 transition={{ duration: 0.3 }}
                                 // Contenitore Menu: Aggiunge BG e cambia colore testo usando le variabili
-                                className="absolute right-full mr-4 flex flex-col text-[var(--foreground)] bg-[var(--background)] text-xs py-2 px-4 shadow-lg rounded-md"
+                                className="absolute top-full right-0 mt-2 w-screen md:w-auto md:right-full md:top-auto md:mt-0 md:mr-4 flex flex-col items-center md:items-start text-[var(--foreground)] bg-[var(--background)] text-xs py-4 px-4 shadow-lg md:rounded-md"
                                 onMouseEnter={cancelCloseTimer}
                                 onMouseLeave={startCloseTimer}
                             >
                                 <motion.ul
-                                    className="flex flex-row space-x-2"
+                                    className="flex flex-col space-y-2 text-center md:flex-row md:space-y-0 md:space-x-4"
                                     variants={menuVariants}
                                     initial="closed"
                                     animate="open"
                                     exit="closed"
                                 >
+                                    <motion.li
+                                        variants={itemVariants}
+                                        onClick={() => setIsOpen(false)}
+                                    >
+                                        <Link
+                                            href="/projects"
+                                            className="hover:text-primary whitespace-nowrap"
+                                        >
+                                            Projects
+                                        </Link>
+                                    </motion.li>
                                     {menuItems.map((item) => (
                                         <motion.li
                                             key={item.ID}
@@ -110,7 +128,6 @@ const Menu = ({
                                         >
                                             <Link
                                                 href={item.url}
-                                                // Link: hover usa text-primary (che è già dinamico tramite tailwind.config.ts)
                                                 className="hover:text-primary whitespace-nowrap"
                                             >
                                                 {item.title}

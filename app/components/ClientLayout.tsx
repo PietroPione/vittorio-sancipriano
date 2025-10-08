@@ -1,8 +1,9 @@
 "use client";
 
 import { ThemeProvider } from "./ThemeProvider";
-import { ProjectPreviewProvider } from "./ProjectPreviewProvider";
 import ProjectPreview from "./ProjectPreview";
+import PageTransition from "./PageTransition";
+import CustomCursor from "./CustomCursor"; // Importa il cursore
 
 type Theme = {
     background: string;
@@ -17,11 +18,10 @@ export default function ClientLayout({
     theme: Theme;
 }) {
     return (
-        <ProjectPreviewProvider>
-            <ThemeProvider theme={theme}>
-                {children}
-                <ProjectPreview />
-            </ThemeProvider>
-        </ProjectPreviewProvider>
+        <ThemeProvider theme={theme}>
+            <CustomCursor />
+            <PageTransition>{children}</PageTransition>
+            <ProjectPreview />
+        </ThemeProvider>
     );
 }

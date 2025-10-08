@@ -35,7 +35,7 @@ export default function ProjectsMenu({ projects }: ProjectsMenuProps) {
   if (!projects || !Array.isArray(projects) || projects.length === 0) return null;
 
   return (
-    <nav className="text-sm pt-20 font-medium flex flex-wrap gap-2 relative z-50">
+    <nav className="text-sm pt-20 font-medium flex flex-col md:flex-row md:flex-wrap items-center justify-center gap-2 relative z-50">
       {projects.map((proj, i) => (
         <React.Fragment key={proj.id}>
           <Link
