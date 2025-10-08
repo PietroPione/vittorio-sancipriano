@@ -31,9 +31,9 @@ async function getProject(slug: string): Promise<Progetto> {
 export default async function ProjectPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug:string }>;
 }) {
-  const { slug } = params;
+  const { slug } = await params;
   const project = await getProject(slug);
   const pageTitle = project.acf.titolo_personalizzato || project.title.rendered;
 

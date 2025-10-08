@@ -27,7 +27,6 @@ export default function ProjectsMenu({ projects }: ProjectsMenuProps) {
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, slug: string) => {
     e.preventDefault();
-    showProject(null);
     router.push(`/${slug}`);
   };
 

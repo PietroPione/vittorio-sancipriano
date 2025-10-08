@@ -42,14 +42,6 @@ const ComposerCard: React.FC<ComposerCardProps> = ({ item, onImageClick, isPrevi
     item.immagine_3,
   ].filter(Boolean) as SubItem[];
 
-  const itemVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { duration: 1.2, ease: "easeOut" },
-    },
-  };
-
   const renderSubItem = (sub: SubItem, idx: number) => {
     const leftImg = sub.left ? parseFloat(sub.left) : 0;
     const topImg = sub.top ? parseFloat(sub.top) : 50;
@@ -59,7 +51,7 @@ const ComposerCard: React.FC<ComposerCardProps> = ({ item, onImageClick, isPrevi
     const topTxt = sub.top ? parseFloat(sub.top) : 12.5;
     const largTxt = sub.larghezza ? parseFloat(sub.larghezza) : 100;
 
-    if (sub.immagine_o_testo === "img" && sub.immagine?.url) {
+    if (sub.immagine_o_testo === "img" && sub.immagine && sub.immagine.url) {
       const { url, alt, width, height } = sub.immagine;
 
       if (!url || !width || !height) return null;
@@ -95,15 +87,11 @@ const ComposerCard: React.FC<ComposerCardProps> = ({ item, onImageClick, isPrevi
         );
       } else {
         return (
-          <motion.div
+          <div
             key={`img-${idx}`}
             style={containerStyle}
             className="absolute"
             onClick={() => onImageClick(url)}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-            variants={itemVariants}
           >
             <Image
               src={url}
@@ -121,7 +109,7 @@ const ComposerCard: React.FC<ComposerCardProps> = ({ item, onImageClick, isPrevi
                 }
               }}
             />
-          </motion.div>
+          </div>
         );
       }
     }
@@ -147,15 +135,11 @@ const ComposerCard: React.FC<ComposerCardProps> = ({ item, onImageClick, isPrevi
         );
       } else {
         return (
-          <motion.div
+          <div
             key={`txt-${idx}`}
             style={style}
             className="absolute"
             dangerouslySetInnerHTML={{ __html: sub.testo || "" }}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-            variants={itemVariants}
           />
         );
       }
