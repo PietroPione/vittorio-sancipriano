@@ -1,12 +1,36 @@
 import ProjectsMenu from "../components/ProjectsMenu";
 
+// Definizione dei tipi per i dati dei progetti, allineati con ComposerCard.tsx
+interface ImageAcf {
+  url?: string;
+  alt?: string;
+  width?: number;
+  height?: number;
+}
+
+interface SubItem {
+  immagine_o_testo?: "img" | "txt" | "";
+  immagine?: ImageAcf | false;
+  testo?: string;
+  left?: string;
+  top?: string;
+  larghezza?: string;
+}
+
+interface ComposerItem {
+  immagine_1?: SubItem;
+  immagine_2?: SubItem;
+  immagine_3?: SubItem;
+  [key: string]: any;
+}
+
 interface Progetto {
   id: number;
   slug: string;
   title: { rendered: string };
   link: string;
   acf: {
-    composer: any[];
+    composer: ComposerItem[];
     titolo_personalizzato?: string;
     data?: string;
   };
@@ -14,20 +38,16 @@ interface Progetto {
 
 async function getProjects(): Promise<Progetto[]> {
   try {
-    // Step 1: Fetch the list of project slugs for efficiency
-    const listRes = await fetch("https://vs.ferdinandocambiale.com/wp-json/wp/v2/progetto?_fields=slug", { next: { revalidate: 3600 } });
-    if (!listRes.ok) throw new Error('Failed to fetch project list');
-    const projectSlugs: { slug: string }[] = await listRes.json();
+    // Fetch all projects in a single API call for better performance
+    const res = await fetch("https://vs.ferdinandocambiale.com/wp-json/wp/v2/progetto?per_page=100", { next: { revalidate: 3600 } });
 
-    // Step 2: Fetch the full data for each project in parallel
-    const projectPromises = projectSlugs.map(p =>
-      fetch(`https://vs.ferdinandocambiale.com/wp-json/wp/v2/progetto?slug=${p.slug}`, { next: { revalidate: 3600 } })
-        .then(res => res.json())
-        .then(data => data[0]) // The API returns an array, we want the first element
-    );
+    if (!res.ok) {
+      console.error("Failed to fetch projects:", res.status, res.statusText);
+      throw new Error('Failed to fetch project list');
+    }
 
-    const fullProjects = await Promise.all(projectPromises);
-    return fullProjects.filter(p => p); // Filter out any null/undefined results
+    const projects: Progetto[] = await res.json();
+    return projects;
 
   } catch (err) {
     console.error("Errore fetch progetti:", err);
@@ -35,12 +55,11 @@ async function getProjects(): Promise<Progetto[]> {
   }
 }
 
-
 export default async function Home() {
   const projects = await getProjects();
 
   return (
-    <div >
+    <div>
       <main className="px-12">
         <ProjectsMenu projects={projects} />
       </main>

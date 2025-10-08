@@ -8,6 +8,8 @@ interface SubItem {
   immagine?: {
     url?: string;
     alt?: string;
+    width?: number;
+    height?: number;
   } | false;
   testo?: string;
   left?: string;
@@ -58,8 +60,9 @@ const ComposerCard: React.FC<ComposerCardProps> = ({ item, onImageClick, isPrevi
     const largTxt = sub.larghezza ? parseFloat(sub.larghezza) : 100;
 
     if (sub.immagine_o_testo === "img" && sub.immagine?.url) {
-      const url = sub.immagine.url;
-      const alt = sub.immagine.alt || "Project image";
+      const { url, alt, width, height } = sub.immagine;
+
+      if (!url || !width || !height) return null;
 
       const containerStyle: React.CSSProperties = {
         position: "absolute",
@@ -75,37 +78,50 @@ const ComposerCard: React.FC<ComposerCardProps> = ({ item, onImageClick, isPrevi
           <div
             key={`img-${idx}`}
             style={containerStyle}
-            className="relative aspect-auto"
+            className="relative"
+            onClick={() => onImageClick(url)}
           >
-            <img
+            <Image
               src={url}
-              alt={alt}
+              alt={alt || "Project image"}
+              width={width}
+              height={height}
+              sizes={`${largImg}vw`}
               style={{ width: '100%', height: 'auto' }}
               className="select-none"
-              onClick={() => onImageClick(url)}
+              priority
             />
           </div>
         );
       } else {
         return (
-          <motion.img
+          <motion.div
             key={`img-${idx}`}
-            src={url}
-            alt={alt}
             style={containerStyle}
-            className="absolute object-contain"
+            className="absolute"
             onClick={() => onImageClick(url)}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
             variants={itemVariants}
-            onLoad={() => {
-              if (containerRef.current) {
-                const rect = (containerRef.current as HTMLElement).getBoundingClientRect();
-                setHeight(Math.max(height, rect.height));
-              }
-            }}
-          />
+          >
+            <Image
+              src={url}
+              alt={alt || "Project image"}
+              width={width}
+              height={height}
+              sizes={`${largImg}vw`}
+              className="object-contain"
+              style={{ width: '100%', height: 'auto' }}
+              priority={idx < 2}
+              onLoad={() => {
+                if (containerRef.current) {
+                  const rect = (containerRef.current as HTMLElement).getBoundingClientRect();
+                  setHeight(Math.max(height, rect.height));
+                }
+              }}
+            />
+          </motion.div>
         );
       }
     }
