@@ -3,9 +3,15 @@
 import React from "react";
 import { useProjectPreview } from "./ProjectPreviewProvider";
 import ProjectContent from "./ProjectContent";
+import { usePathname } from "next/navigation";
 
 export default function ProjectPreview() {
   const { previewProject, showProject, hideProjectWithDelay } = useProjectPreview();
+  const pathname = usePathname();
+
+  React.useEffect(() => {
+    hideProjectWithDelay();
+  }, [pathname]);
 
   const isVisible = !!previewProject;
 

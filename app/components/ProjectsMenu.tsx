@@ -27,6 +27,7 @@ export default function ProjectsMenu({ projects }: ProjectsMenuProps) {
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, slug: string) => {
     e.preventDefault();
+    hideProjectWithDelay(); // Nasconde la preview subito
     router.push(`/${slug}`);
   };
 
