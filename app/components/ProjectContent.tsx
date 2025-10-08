@@ -4,12 +4,17 @@ import React, { useState, useEffect } from "react";
 import ComposerCard from "@/components/ComposerCard";
 import FullScreenSlider from "@/components/FullScreenSlider";
 
+interface ComposerItem {
+  select_photo_qty: "1" | "2" | "3";
+  [key: string]: any;
+}
+
 interface Progetto {
     id: number;
     slug: string;
     title: { rendered: string };
     acf: {
-        composer: any[];
+        composer: ComposerItem[];
         titolo_personalizzato?: string;
     };
 }

@@ -1,8 +1,11 @@
 "use client";
-import React, { useRef, useState } from "react";
-import { motion } from "framer-motion";
-import Image from "next/image";
 
+import React from "react";
+import { motion, easeOut } from "framer-motion";
+import Image from "next/image";
+import useMediaQuery from "@/hooks/useMediaQuery"; // Importa l'hook
+
+// Interfacce per i dati
 interface SubItem {
   immagine_o_testo?: "img" | "txt" | "";
   immagine?: {
@@ -18,6 +21,7 @@ interface SubItem {
 }
 
 interface ComposerItem {
+  select_photo_qty: "1" | "2" | "3";
   immagine_1?: SubItem;
   immagine_2?: SubItem;
   immagine_3?: SubItem;
@@ -30,147 +34,134 @@ interface ComposerCardProps {
   isPreview?: boolean;
 }
 
-const ComposerCard: React.FC<ComposerCardProps> = ({ item, onImageClick, isPreview = false }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [height, setHeight] = useState<number>(800);
+const ComposerCard: React.FC<ComposerCardProps> = ({
+  item,
+  onImageClick,
+  isPreview = false,
+}) => {
+  const isMobile = useMediaQuery("(max-width: 768px)"); // Media query per mobile
 
   if (!item) return null;
 
-  const subItemsRaw = [
+  const subItems: SubItem[] = [
     item.immagine_1,
     item.immagine_2,
     item.immagine_3,
-  ].filter(Boolean) as SubItem[];
+  ].filter(
+    (sub): sub is SubItem =>
+      !!sub && (sub.immagine_o_testo === "img" || sub.immagine_o_testo === "txt")
+  );
+
+  if (subItems.length === 0) {
+    return null;
+  }
 
   const itemVariants = {
-    hidden: { opacity: 0 },
+    hidden: { opacity: 0, y: 20 },
     visible: {
       opacity: 1,
-      transition: { duration: 1.2, ease: "easeOut" },
+      y: 0,
+      transition: { duration: 0.8, ease: easeOut },
     },
   };
 
-  const renderSubItem = (sub: SubItem, idx: number) => {
-    const leftImg = sub.left ? parseFloat(sub.left) : 0;
-    const topImg = sub.top ? parseFloat(sub.top) : 50;
-    const largImg = sub.larghezza ? parseFloat(sub.larghezza) : 30;
+  const renderSubItem = (sub: SubItem, idx: number, isMobileLayout: boolean) => {
+    const MotionWrapper = isPreview ? "div" : motion.div;
+    const motionProps = isPreview
+      ? {}
+      : {
+          initial: "hidden",
+          whileInView: "visible",
+          viewport: { once: true, amount: 0.2 },
+          variants: itemVariants,
+        };
 
-    const leftTxt = sub.left ? parseFloat(sub.left) : 0;
-    const topTxt = sub.top ? parseFloat(sub.top) : 12.5;
-    const largTxt = sub.larghezza ? parseFloat(sub.larghezza) : 100;
+    // Render per le immagini
+    if (sub.immagine_o_testo === "img" && sub.immagine) {
+      const { url, alt, width: imgWidth, height: imgHeight } = sub.immagine;
+      if (!url || !imgWidth || !imgHeight) return null;
 
-    if (sub.immagine_o_testo === "img" && sub.immagine?.url) {
-      const { url, alt, width, height } = sub.immagine;
-
-      if (!url || !width || !height) return null;
-
-      const containerStyle: React.CSSProperties = {
+      const desktopStyle: React.CSSProperties = {
         position: "absolute",
-        left: `${leftImg}%`,
-        top: `${topImg}%`,
-        width: `${largImg}%`,
-        transform: `translateY(-50%)`,
-        cursor: "pointer",
+        left: `${sub.left || 0}%`,
+        top: `${sub.top || 50}%`,
+        width: `${sub.larghezza || 30}%`,
+        transform: "translateY(-50%)",
       };
 
-      if (isPreview) {
-        return (
-          <div
-            key={`img-${idx}`}
-            style={containerStyle}
-            className="relative"
-            onClick={() => onImageClick(url)}
-          >
-            <Image
-              src={url}
-              alt={alt || "Project image"}
-              width={width}
-              height={height}
-              sizes={`${largImg}vw`}
-              style={{ width: '100%', height: 'auto' }}
-              className="select-none"
-              priority
-            />
-          </div>
-        );
-      } else {
-        return (
-          <motion.div
-            key={`img-${idx}`}
-            style={containerStyle}
-            className="absolute"
-            onClick={() => onImageClick(url)}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-            variants={itemVariants}
-          >
-            <Image
-              src={url}
-              alt={alt || "Project image"}
-              width={width}
-              height={height}
-              sizes={`${largImg}vw`}
-              className="object-contain"
-              style={{ width: '100%', height: 'auto' }}
-              priority={idx < 2}
-              onLoad={() => {
-                if (containerRef.current) {
-                  const rect = (containerRef.current as HTMLElement).getBoundingClientRect();
-                  setHeight(Math.max(height, rect.height));
-                }
-              }}
-            />
-          </motion.div>
-        );
-      }
+      const mobileStyle: React.CSSProperties = {
+        width: "100%", // Le immagini occupano tutta la larghezza su mobile
+        marginBottom: "1rem",
+      };
+
+      return (
+        <MotionWrapper
+          key={`img-${idx}`}
+          style={isMobileLayout ? mobileStyle : desktopStyle}
+          className="cursor-pointer"
+          onClick={() => onImageClick(url)}
+          {...motionProps}
+        >
+          <Image
+            src={url}
+            alt={alt || "Project image"}
+            width={imgWidth}
+            height={imgHeight}
+            sizes={isMobileLayout ? "100vw" : `${sub.larghezza || 30}vw`}
+            className="w-full h-auto object-contain select-none"
+            priority={idx < 2}
+          />
+        </MotionWrapper>
+      );
     }
 
+    // Render per il testo
     if (sub.immagine_o_testo === "txt" && sub.testo) {
-      const style: React.CSSProperties = {
+      const desktopStyle: React.CSSProperties = {
         position: "absolute",
-        left: `${leftTxt}%`,
-        top: `${topTxt}%`,
-        width: `${largTxt}%`,
+        left: `${sub.left || 0}%`,
+        top: `${sub.top || 50}%`,
+        width: `${sub.larghezza || 100}%`,
         transform: "translateY(-50%)",
-        color: 'var(--foreground)',
+        color: "var(--foreground)",
       };
 
-      if (isPreview) {
-        return (
-          <div
-            key={`txt-${idx}`}
-            style={style}
-            className="absolute"
-            dangerouslySetInnerHTML={{ __html: sub.testo || "" }}
-          />
-        );
-      } else {
-        return (
-          <motion.div
-            key={`txt-${idx}`}
-            style={style}
-            className="absolute"
-            dangerouslySetInnerHTML={{ __html: sub.testo || "" }}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-            variants={itemVariants}
-          />
-        );
-      }
+      const mobileStyle: React.CSSProperties = {
+        width: "90%",
+        textAlign: "center",
+        margin: "2rem auto",
+        color: "var(--foreground)",
+      };
+
+      return (
+        <MotionWrapper
+          key={`txt-${idx}`}
+          style={isMobileLayout ? mobileStyle : desktopStyle}
+          dangerouslySetInnerHTML={{ __html: sub.testo }}
+          {...motionProps}
+        />
+      );
     }
 
     return null;
   };
 
+  // Layout per Desktop (posizionamento assoluto)
+  if (!isMobile) {
+    return (
+      <div
+        className="relative w-full overflow-hidden"
+        style={{ height: "100vh", maxHeight: "1200px" }}
+      >
+        {subItems.map((sub, i) => renderSubItem(sub, i, false))}
+      </div>
+    );
+  }
+
+  // Layout per Mobile (flex column)
   return (
-    <div
-      ref={containerRef}
-      className="relative w-full overflow-visible"
-      style={{ minHeight: `${height}px` }}
-    >
-      {subItemsRaw.map((s, i) => renderSubItem(s, i))}
+    <div className="flex flex-col items-center w-full py-8">
+      {subItems.map((sub, i) => renderSubItem(sub, i, true))}
     </div>
   );
 };

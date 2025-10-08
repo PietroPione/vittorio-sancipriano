@@ -9,7 +9,10 @@ interface Progetto {
   slug: string;
   title: { rendered: string };
   acf: {
-    composer: any[];
+    composer: {
+      select_photo_qty: "1" | "2" | "3";
+      [key: string]: any;
+    }[];
     titolo_personalizzato?: string;
   };
 }

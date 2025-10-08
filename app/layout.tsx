@@ -1,6 +1,8 @@
 import ThemeToggle from "@/components/ThemeToggle";
 import Menu, { MenuItem } from "@/components/Menu";
 import { TitleProvider } from "@/components/TitleContext";
+import { ProjectPreviewProvider } from "@/components/ProjectPreviewProvider";
+import ProjectPreview from "@/components/ProjectPreview";
 
 import type { Metadata } from "next";
 import "./globals.css";
@@ -17,6 +19,7 @@ type ThemeOptions = {
 type ThemeData = {
   acf: ThemeOptions;
 };
+
 
 async function getMenuItems(): Promise<MenuItem[]> {
   try {
@@ -101,16 +104,18 @@ export default async function RootLayout({
       />
       <body className="antialiased">
         <TitleProvider>
-          <ClientLayout
-            theme={{
-              background: theme.colore_light,
-              foreground: theme.colore_dark,
-            }}
-          >
-            <Menu menuItems={menuItems} />
-            {children}
-            <ThemeToggle />
-          </ClientLayout>
+          <ProjectPreviewProvider>
+            <ClientLayout
+              theme={{
+                background: theme.colore_light,
+                foreground: theme.colore_dark,
+              }}
+            >
+              <Menu menuItems={menuItems} />
+              {children}
+              <ThemeToggle />
+            </ClientLayout>
+          </ProjectPreviewProvider>
         </TitleProvider>
       </body>
     </html>
