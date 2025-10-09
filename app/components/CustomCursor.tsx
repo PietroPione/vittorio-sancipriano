@@ -22,8 +22,8 @@ const CustomCursor = () => {
     // Add hover effects for interactive elements
     const interactiveElements = document.querySelectorAll('a, button, [role="button"], input, .cursor-pointer');
     interactiveElements.forEach(el => {
-        el.addEventListener('mouseenter', () => setCursorVariant('link'));
-        el.addEventListener('mouseleave', () => setCursorVariant('default'));
+      el.addEventListener('mouseenter', () => setCursorVariant('link'));
+      el.addEventListener('mouseleave', () => setCursorVariant('default'));
     });
 
     return () => {
@@ -51,18 +51,18 @@ const CustomCursor = () => {
       y: mousePosition.y - 16,
       height: 32,
       width: 32,
-      backgroundColor: 'var(--background)',
+      backgroundColor: 'transparent',
       borderColor: 'var(--foreground)',
       borderWidth: '1px',
       mixBlendMode: 'normal' as const,
     },
     click: {
-        x: mousePosition.x - 12,
-        y: mousePosition.y - 12,
-        height: 24,
-        width: 24,
-        backgroundColor: 'var(--foreground)',
-        mixBlendMode: 'difference' as const,
+      x: mousePosition.x - 12,
+      y: mousePosition.y - 12,
+      height: 24,
+      width: 24,
+      backgroundColor: 'var(--foreground)',
+      mixBlendMode: 'difference' as const,
     }
   };
 

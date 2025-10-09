@@ -29,7 +29,10 @@ const ThemeToggle: React.FC = () => {
                 className="text-[var(--foreground)]"
                 aria-label="Toggle theme"
             >
-                <Luna />
+                <div className="flex items-end justify-end">
+                    <Luna className="w-6 h-6" />
+                </div>
+
             </button>
         </div>
     );

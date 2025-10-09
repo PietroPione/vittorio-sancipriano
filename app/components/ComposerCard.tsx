@@ -89,7 +89,8 @@ const ComposerCard: React.FC<ComposerCardProps> = ({
 
       const mobileStyle: React.CSSProperties = {
         width: "100%",
-        marginBottom: "1rem",
+        padding: "0 1rem",
+        marginBottom: "2rem",
       };
 
       return (
@@ -125,7 +126,7 @@ const ComposerCard: React.FC<ComposerCardProps> = ({
 
       const mobileStyle: React.CSSProperties = {
         width: "90%",
-        textAlign: "center",
+        textAlign: "start",
         margin: "2rem auto",
         color: "var(--foreground)",
       };

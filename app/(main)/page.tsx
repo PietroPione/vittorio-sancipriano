@@ -60,7 +60,7 @@ export default async function Home() {
 
   return (
     <div>
-      <main className="px-12">
+      <main className="px-4">
         <ProjectsMenu projects={projects} />
       </main>
     </div>

@@ -1,7 +1,5 @@
 "use client";
 
-"use client";
-
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Logo from "./Logo";
@@ -74,18 +72,82 @@ const Menu = ({
     return (
         <header className="fixed w-full top-4 left-0 right-0 z-50">
             <div className="px-4 flex justify-between items-center">
-                <Link href="/" className="w-1/2" onClick={() => setPageTitle("")}>
+                {/* Desktop: Logo sempre visibile */}
+                <Link
+                    href="/"
+                    className="w-1/2 hidden md:block"
+                    onClick={() => setPageTitle("")}
+                >
                     <h1
-                        // Titolo: Cambia colore usando la variabile --foreground
-                        className="inline-block max-w-full truncate text-[var(--foreground)] text-xs"
+                        className="inline-block max-w-full truncate text-[var(--foreground)] text-xs whitespace-nowrap overflow-hidden"
                         dangerouslySetInnerHTML={{
                             __html: `Vittorio Sancipriano${pageTitle ? ` - ${pageTitle}` : ""}`,
                         }}
                     />
+
                 </Link>
+
+                {/* Mobile: Menu a sinistra o Logo */}
+                <div className="md:hidden flex-1">
+                    <AnimatePresence>
+                        {isOpen ? (
+                            <motion.div
+                                initial="closed"
+                                animate="open"
+                                exit="closed"
+                                variants={menuVariants}
+                                transition={{ duration: 0.3 }}
+                                className="flex flex-col text-[var(--foreground)] text-xs"
+                            >
+                                <motion.ul
+                                    className="flex flex-row space-x-2"
+                                    variants={menuVariants}
+                                    initial="closed"
+                                    animate="open"
+                                    exit="closed"
+                                >
+                                    <motion.li
+                                        variants={itemVariants}
+                                        onClick={() => setIsOpen(false)}
+                                    >
+
+                                    </motion.li>
+                                    {menuItems.map((item) => (
+                                        <motion.li
+                                            key={item.ID}
+                                            variants={itemVariants}
+                                            onClick={() => setIsOpen(false)}
+                                        >
+                                            <Link
+                                                href={item.url}
+                                                className="hover:text-primary whitespace-nowrap"
+                                            >
+                                                {item.title}
+                                            </Link>
+                                        </motion.li>
+                                    ))}
+                                </motion.ul>
+                            </motion.div>
+                        ) : (
+                            <Link
+                                href="/"
+                                onClick={() => setPageTitle("")}
+                            >
+                                <h1
+                                    className="inline-block max-w-full truncate text-[var(--foreground)] text-xs"
+                                    dangerouslySetInnerHTML={{
+                                        __html: `Vittorio Sancipriano${pageTitle ? ` - ${pageTitle}` : ""}`,
+                                    }}
+                                />
+                            </Link>
+                        )}
+                    </AnimatePresence>
+                </div>
+
+                {/* Desktop: Menu dropdown a destra */}
                 <div
                     ref={nodeRef}
-                    className="relative flex items-center"
+                    className="relative hidden md:flex items-center"
                     onMouseLeave={startCloseTimer}
                     onMouseEnter={cancelCloseTimer}
                 >
@@ -97,13 +159,12 @@ const Menu = ({
                                 exit="closed"
                                 variants={menuVariants}
                                 transition={{ duration: 0.3 }}
-                                // Contenitore Menu: Aggiunge BG e cambia colore testo usando le variabili
-                                className="absolute top-full right-0 mt-2 w-screen md:w-auto md:right-full md:top-auto md:mt-0 md:mr-4 flex flex-col items-center md:items-start text-[var(--foreground)] bg-[var(--background)] text-xs py-4 px-4 shadow-lg md:rounded-md"
+                                className="absolute top-auto right-full mt-0 mr-4 flex flex-col items-start text-[var(--foreground)] bg-[var(--background)] text-xs py-4 px-4 "
                                 onMouseEnter={cancelCloseTimer}
                                 onMouseLeave={startCloseTimer}
                             >
                                 <motion.ul
-                                    className="flex flex-col space-y-2 text-center md:flex-row md:space-y-0 md:space-x-4"
+                                    className="flex flex-row space-x-4"
                                     variants={menuVariants}
                                     initial="closed"
                                     animate="open"
@@ -113,12 +174,7 @@ const Menu = ({
                                         variants={itemVariants}
                                         onClick={() => setIsOpen(false)}
                                     >
-                                        <Link
-                                            href="/projects"
-                                            className="hover:text-primary whitespace-nowrap"
-                                        >
-                                            Projects
-                                        </Link>
+
                                     </motion.li>
                                     {menuItems.map((item) => (
                                         <motion.li
@@ -139,12 +195,19 @@ const Menu = ({
                         )}
                     </AnimatePresence>
 
-                    {/* Logo toggle: Cambia colore usando la variabile --foreground */}
                     <Logo
-                        className={`w-6 h-6 text-[var(--foreground)] cursor-pointer `}
+                        className="w-6 h-6 text-[var(--foreground)] cursor-pointer hidden md:block"
                         onClick={() => setIsOpen(!isOpen)}
                         onMouseEnter={cancelCloseTimer}
                         onMouseLeave={startCloseTimer}
+                    />
+                </div>
+
+                {/* Mobile: Logo toggle a destra */}
+                <div className="md:hidden">
+                    <Logo
+                        className="w-6 h-6 text-[var(--foreground)] cursor-pointer"
+                        onClick={() => setIsOpen(!isOpen)}
                     />
                 </div>
             </div>
