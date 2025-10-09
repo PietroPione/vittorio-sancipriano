@@ -75,11 +75,11 @@ const Menu = ({
                 {/* Desktop: Logo sempre visibile */}
                 <Link
                     href="/"
-                    className="w-1/2 hidden md:block"
+                    className="hidden md:block"
                     onClick={() => setPageTitle("")}
                 >
                     <h1
-                        className="inline-block max-w-full truncate text-[var(--foreground)] text-xs whitespace-nowrap overflow-hidden"
+                        className="inline-block text-[var(--foreground)] text-xs whitespace-nowrap"
                         dangerouslySetInnerHTML={{
                             __html: `Vittorio Sancipriano${pageTitle ? ` - ${pageTitle}` : ""}`,
                         }}
@@ -134,7 +134,7 @@ const Menu = ({
                                 onClick={() => setPageTitle("")}
                             >
                                 <h1
-                                    className="inline-block max-w-full truncate text-[var(--foreground)] text-xs"
+                                    className="inline-block text-[var(--foreground)] text-xs whitespace-nowrap"
                                     dangerouslySetInnerHTML={{
                                         __html: `Vittorio Sancipriano${pageTitle ? ` - ${pageTitle}` : ""}`,
                                     }}
