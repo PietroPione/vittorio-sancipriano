@@ -39,11 +39,7 @@ const itemVariants = {
 
 let inactivityTimer: NodeJS.Timeout | null = null;
 
-const Menu = ({
-    menuItems,
-}: {
-    menuItems: MenuItem[];
-}) => {
+const Menu = ({ menuItems }: { menuItems: MenuItem[] }) => {
     const { pageTitle, setPageTitle } = useTitle();
     const [isOpen, setIsOpen] = useState(false);
     const nodeRef = useRef<HTMLDivElement>(null);
@@ -84,7 +80,6 @@ const Menu = ({
                             __html: `Vittorio Sancipriano${pageTitle ? ` - ${pageTitle}` : ""}`,
                         }}
                     />
-
                 </Link>
 
                 {/* Mobile: Menu a sinistra o Logo */}
@@ -106,33 +101,27 @@ const Menu = ({
                                     animate="open"
                                     exit="closed"
                                 >
-                                    <motion.li
-                                        variants={itemVariants}
-                                        onClick={() => setIsOpen(false)}
-                                    >
-
-                                    </motion.li>
-                                    {menuItems.map((item) => (
-                                        <motion.li
-                                            key={item.ID}
-                                            variants={itemVariants}
-                                            onClick={() => setIsOpen(false)}
-                                        >
-                                            <Link
-                                                href={item.url}
-                                                className="hover:text-primary whitespace-nowrap"
+                                    {menuItems.map((item) => {
+                                        const slug = `/${item.title.toLowerCase()}`;
+                                        return (
+                                            <motion.li
+                                                key={item.ID}
+                                                variants={itemVariants}
+                                                onClick={() => setIsOpen(false)}
                                             >
-                                                {item.title}
-                                            </Link>
-                                        </motion.li>
-                                    ))}
+                                                <Link
+                                                    href={slug}
+                                                    className="hover:text-primary whitespace-nowrap"
+                                                >
+                                                    {item.title}
+                                                </Link>
+                                            </motion.li>
+                                        );
+                                    })}
                                 </motion.ul>
                             </motion.div>
                         ) : (
-                            <Link
-                                href="/"
-                                onClick={() => setPageTitle("")}
-                            >
+                            <Link href="/" onClick={() => setPageTitle("")}>
                                 <h1
                                     className="inline-block text-[var(--foreground)] text-xs whitespace-nowrap"
                                     dangerouslySetInnerHTML={{
@@ -159,7 +148,7 @@ const Menu = ({
                                 exit="closed"
                                 variants={menuVariants}
                                 transition={{ duration: 0.3 }}
-                                className="absolute top-auto right-full mt-0 mr-4 flex flex-col items-start text-[var(--foreground)] bg-[var(--background)] text-xs py-4 px-4 "
+                                className="absolute top-auto right-full mt-0 mr-4 flex flex-col items-start text-[var(--foreground)] bg-[var(--background)] text-xs py-4 px-4"
                                 onMouseEnter={cancelCloseTimer}
                                 onMouseLeave={startCloseTimer}
                             >
@@ -170,26 +159,23 @@ const Menu = ({
                                     animate="open"
                                     exit="closed"
                                 >
-                                    <motion.li
-                                        variants={itemVariants}
-                                        onClick={() => setIsOpen(false)}
-                                    >
-
-                                    </motion.li>
-                                    {menuItems.map((item) => (
-                                        <motion.li
-                                            key={item.ID}
-                                            variants={itemVariants}
-                                            onClick={() => setIsOpen(false)}
-                                        >
-                                            <Link
-                                                href={item.url}
-                                                className="hover:text-primary whitespace-nowrap"
+                                    {menuItems.map((item) => {
+                                        const slug = `/${item.title.toLowerCase()}`;
+                                        return (
+                                            <motion.li
+                                                key={item.ID}
+                                                variants={itemVariants}
+                                                onClick={() => setIsOpen(false)}
                                             >
-                                                {item.title}
-                                            </Link>
-                                        </motion.li>
-                                    ))}
+                                                <Link
+                                                    href={slug}
+                                                    className="hover:text-primary whitespace-nowrap"
+                                                >
+                                                    {item.title}
+                                                </Link>
+                                            </motion.li>
+                                        );
+                                    })}
                                 </motion.ul>
                             </motion.div>
                         )}
