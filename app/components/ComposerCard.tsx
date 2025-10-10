@@ -164,8 +164,8 @@ const ComposerCard: React.FC<ComposerCardProps> = ({
 
     return (
       <div
-        className="relative w-full overflow-hidden"
-        style={{ height: "100vh", maxHeight: "1200px" }}
+        className="relative w-full"
+        style={{ minHeight: "100vh" }}
       >
         {subItems.map((sub, i) => renderSubItem(sub, i, false))}
       </div>

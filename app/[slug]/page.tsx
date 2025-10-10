@@ -4,12 +4,12 @@ import ProjectPageClient from "@/components/ProjectPageClient";
 
 export const dynamic = "force-dynamic";
 
-interface Progetto {
+interface WPBase {
   id: number;
   slug: string;
   title: { rendered: string };
-  acf: {
-    composer: {
+  acf?: {
+    composer?: {
       select_photo_qty: "1" | "2" | "3";
       [key: string]: any;
     }[];
@@ -17,35 +17,50 @@ interface Progetto {
   };
 }
 
-export async function generateStaticParams() {
+async function fetchWPContent(
+  type: "progetto" | "pages",
+  slug: string
+): Promise<WPBase | null> {
   try {
     const res = await fetch(
-      "https://vs.ferdinandocambiale.com/wp-json/wp/v2/progetto?_fields=slug&per_page=100",
+      `https://vs.ferdinandocambiale.com/wp-json/wp/v2/${type}?slug=${slug}`,
       { next: { revalidate: 3600 } }
     );
-    if (!res.ok) return [];
-    const projects: { slug: string }[] = await res.json();
-    return projects.map((project) => ({
-      slug: project.slug,
+    if (!res.ok) return null;
+    const items: WPBase[] = await res.json();
+    if (!items || items.length === 0) return null;
+    return items[0];
+  } catch (error) {
+    console.error(`Error fetching ${type}:`, error);
+    return null;
+  }
+}
+
+export async function generateStaticParams() {
+  try {
+    const [projectsRes, pagesRes] = await Promise.all([
+      fetch(
+        "https://vs.ferdinandocambiale.com/wp-json/wp/v2/progetto?_fields=slug&per_page=100",
+        { next: { revalidate: 3600 } }
+      ),
+      fetch(
+        "https://vs.ferdinandocambiale.com/wp-json/wp/v2/pages?_fields=slug&per_page=100",
+        { next: { revalidate: 3600 } }
+      ),
+    ]);
+
+    const projects = projectsRes.ok ? await projectsRes.json() : [];
+    const pages = pagesRes.ok ? await pagesRes.json() : [];
+
+    const allSlugs = [...projects, ...pages].map((item: { slug: string }) => ({
+      slug: item.slug,
     }));
+
+    return allSlugs;
   } catch (error) {
     console.error("Failed to fetch slugs for generateStaticParams:", error);
     return [];
   }
-}
-
-async function getProject(slug: string): Promise<Progetto> {
-  const res = await fetch(
-    `https://vs.ferdinandocambiale.com/wp-json/wp/v2/progetto?slug=${slug}`,
-    { next: { revalidate: 3600 } }
-  );
-
-  if (!res.ok) notFound();
-
-  const projects: Progetto[] = await res.json();
-  if (!projects || projects.length === 0) notFound();
-
-  return projects[0];
 }
 
 type Props = {
@@ -54,8 +69,20 @@ type Props = {
 
 export default async function ProjectPage({ params }: Props) {
   const { slug } = await params;
-  const project = await getProject(slug);
-  const pageTitle = project.acf.titolo_personalizzato || project.title.rendered;
+
+  // 1️⃣ Prova a recuperare come progetto
+  let project = await fetchWPContent("progetto", slug);
+
+  // 2️⃣ Se non trovato, prova come pagina
+  if (!project) {
+    project = await fetchWPContent("pages", slug);
+  }
+
+  // 3️⃣ Se ancora non trovato → 404
+  if (!project) notFound();
+
+  const pageTitle =
+    project.acf?.titolo_personalizzato || project.title?.rendered || "";
 
   return (
     <main className="mx-auto pt-24">
