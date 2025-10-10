@@ -2,7 +2,6 @@
 
 import React from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useProjectPreview } from "./ProjectPreviewProvider";
 
 interface Progetto {
@@ -23,13 +22,6 @@ interface ProjectsMenuProps {
 
 export default function ProjectsMenu({ projects }: ProjectsMenuProps) {
   const { showProject, hideProjectWithDelay } = useProjectPreview();
-  const router = useRouter();
-
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, slug: string) => {
-    e.preventDefault();
-    showProject(null);
-    router.push(`/${slug}`);
-  };
 
   const handleMouseEnter = (proj: Progetto) => {
     if (window.innerWidth >= 768) showProject(proj); // solo da md in su
@@ -53,7 +45,7 @@ export default function ProjectsMenu({ projects }: ProjectsMenuProps) {
               href={`/${proj.slug}`}
               onMouseEnter={() => handleMouseEnter(proj)}
               onMouseLeave={handleMouseLeave}
-              onClick={(e) => handleClick(e, proj.slug)}
+              onClick={() => showProject(null)}
               className="cursor-pointer relative z-50 flex items-start whitespace-nowrap"
             >
               <span

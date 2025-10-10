@@ -23,7 +23,11 @@ export default function ProjectPreview() {
     >
       {previewProject && (
         <main className="mx-auto pt-24">
-          <ProjectContent project={previewProject} isPreview={true} />
+          <ProjectContent
+            project={previewProject}
+            isPreview={true}
+            slug={previewProject.slug}
+          />
         </main>
       )}
     </div>

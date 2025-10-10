@@ -57,6 +57,13 @@ const ComposerCard: React.FC<ComposerCardProps> = ({
     return null;
   }
 
+  const hasTextContent = subItems.some(
+    (sub) => sub.immagine_o_testo === "txt" && sub.testo
+  );
+  const hasImageContent = subItems.some(
+    (sub) => sub.immagine_o_testo === "img" && sub.immagine
+  );
+
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
@@ -71,13 +78,13 @@ const ComposerCard: React.FC<ComposerCardProps> = ({
     const motionProps = isPreview
       ? {}
       : {
-        initial: "hidden",
-        whileInView: "visible",
-        viewport: { once: true, amount: 0.2 },
-        variants: itemVariants,
-      };
+          initial: "hidden",
+          whileInView: "visible",
+          viewport: { once: true, amount: 0.2 },
+          variants: itemVariants,
+        };
 
-    if (sub.immagine_o_testo === "img" && sub.immagine && sub.immagine !== false) {
+    if (sub.immagine_o_testo === "img" && sub.immagine) {
       const { url, alt, width: imgWidth, height: imgHeight } = sub.immagine;
       if (!url || !imgWidth || !imgHeight) return null;
 
@@ -147,9 +154,10 @@ const ComposerCard: React.FC<ComposerCardProps> = ({
   };
 
   const isBioOrContact = slug === "bio" || slug === "contact";
+  const isTextOnly = hasTextContent && !hasImageContent;
 
   if (!isMobile) {
-    if (isBioOrContact) {
+    if (isBioOrContact || isTextOnly) {
       return (
         <div
           className="flex flex-col justify-center items-center w-full py-8"

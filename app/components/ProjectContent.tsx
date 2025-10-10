@@ -50,7 +50,8 @@ const ProjectContent: React.FC<ProjectContentProps> = ({
     isPreview = false,
     slug,
 }) => {
-    const allImages = extractAllImages(project.acf.composer);
+    const composer = Array.isArray(project.acf?.composer) ? project.acf.composer : [];
+    const allImages = extractAllImages(composer);
 
     const [isSliderOpen, setIsSliderOpen] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(0);
@@ -73,7 +74,7 @@ const ProjectContent: React.FC<ProjectContentProps> = ({
     return (
         <>
             <div className="space-y-8">
-                {project.acf.composer?.map((item, index) => (
+                {composer.map((item, index) => (
                     <ComposerCard
                         key={index}
                         item={item}
