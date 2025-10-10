@@ -70,7 +70,7 @@ const Menu = ({
     if (!menuItems || menuItems.length === 0) return null;
 
     return (
-        <header className="fixed w-full top-4 left-0 right-0 z-50">
+        <header className="fixed w-full top-4 left-0 right-0 z-100">
             <div className="px-4 flex justify-between items-center">
                 {/* Desktop: Logo sempre visibile */}
                 <Link
@@ -159,7 +159,7 @@ const Menu = ({
                                 exit="closed"
                                 variants={menuVariants}
                                 transition={{ duration: 0.3 }}
-                                className="absolute top-auto right-full mt-0 mr-4 flex flex-col items-start text-[var(--foreground)] bg-[var(--background)] text-xs py-4 px-4 "
+                                className="absolute top-auto right-full mt-0 mr-4 flex flex-col items-start text-[var(--foreground)] text-xs py-4 px-4 "
                                 onMouseEnter={cancelCloseTimer}
                                 onMouseLeave={startCloseTimer}
                             >
@@ -183,7 +183,7 @@ const Menu = ({
                                             onClick={() => setIsOpen(false)}
                                         >
                                             <Link
-                                                href={item.url}
+                                                href={item.title}
                                                 className="hover:text-primary whitespace-nowrap"
                                             >
                                                 {item.title}
@@ -196,7 +196,7 @@ const Menu = ({
                     </AnimatePresence>
 
                     <Logo
-                        className="w-6 h-6 text-[var(--foreground)] cursor-pointer hidden md:block"
+                        className="w-6 h-6 text-[var(--foreground)] cursor-pointer hidden md:block z-100"
                         onClick={() => setIsOpen(!isOpen)}
                         onMouseEnter={cancelCloseTimer}
                         onMouseLeave={startCloseTimer}
