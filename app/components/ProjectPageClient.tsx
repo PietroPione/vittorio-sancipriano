@@ -20,11 +20,13 @@ interface Progetto {
 interface ProjectPageClientProps {
   project: Progetto;
   pageTitle: string;
+  slug: string;
 }
 
 const ProjectPageClient: React.FC<ProjectPageClientProps> = ({
   project,
   pageTitle,
+  slug,
 }) => {
   const { setPageTitle } = useTitle();
 
@@ -32,7 +34,7 @@ const ProjectPageClient: React.FC<ProjectPageClientProps> = ({
     setPageTitle(pageTitle);
   }, [pageTitle, setPageTitle]);
 
-  return <ProjectContent project={project} isPreview={true} />;
+  return <ProjectContent project={project} isPreview={true} slug={slug} />;
 };
 
 export default ProjectPageClient;
