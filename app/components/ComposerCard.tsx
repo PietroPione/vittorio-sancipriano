@@ -31,12 +31,14 @@ interface ComposerCardProps {
   item: ComposerItem;
   onImageClick: (src: string) => void;
   isPreview?: boolean;
+  slug: string;
 }
 
 const ComposerCard: React.FC<ComposerCardProps> = ({
   item,
   onImageClick,
   isPreview = false,
+  slug,
 }) => {
   const isMobile = useMediaQuery("(max-width: 768px)");
 
@@ -144,7 +146,22 @@ const ComposerCard: React.FC<ComposerCardProps> = ({
     return null;
   };
 
+  const isBioOrContact = slug === "bio" || slug === "contact";
+
   if (!isMobile) {
+    if (isBioOrContact) {
+      return (
+        <div
+          className="flex flex-col justify-center items-center w-full py-8"
+          style={{ minHeight: "100vh" }}
+        >
+          <div className="w-full max-w-4xl px-4">
+            {subItems.map((sub, i) => renderSubItem(sub, i, true))}
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div
         className="relative w-full overflow-hidden"

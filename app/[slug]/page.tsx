@@ -63,7 +63,11 @@ export default async function ProjectPage({ params }: Props) {
         className="sr-only"
         dangerouslySetInnerHTML={{ __html: pageTitle }}
       />
-      <ProjectPageClient project={project} pageTitle={pageTitle} />
+      <ProjectPageClient
+        project={project}
+        pageTitle={pageTitle}
+        slug={slug}
+      />
     </main>
   );
 }

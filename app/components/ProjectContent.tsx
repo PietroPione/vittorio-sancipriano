@@ -22,6 +22,7 @@ interface Progetto {
 interface ProjectContentProps {
     project: Progetto;
     isPreview?: boolean;
+    slug: string;
 }
 
 const extractAllImages = (composer: any[]): { src: string; alt: string }[] => {
@@ -47,6 +48,7 @@ const extractAllImages = (composer: any[]): { src: string; alt: string }[] => {
 const ProjectContent: React.FC<ProjectContentProps> = ({
     project,
     isPreview = false,
+    slug,
 }) => {
     const allImages = extractAllImages(project.acf.composer);
 
@@ -77,6 +79,7 @@ const ProjectContent: React.FC<ProjectContentProps> = ({
                         item={item}
                         onImageClick={handleImageClick}
                         isPreview={isPreview}
+                        slug={slug}
                     />
                 ))}
             </div>
