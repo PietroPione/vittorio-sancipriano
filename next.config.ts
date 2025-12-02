@@ -4,10 +4,12 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: "https",
+        protocol: "http", // 👈 CAMBIATO QUI
         hostname: "vs.ferdinandocambiale.com",
+        pathname: "/**", // 👈 CONSIGLIATO
       },
     ],
+    unoptimized: false, // va bene così
   },
 };
 
