@@ -18,11 +18,10 @@ export default function ProjectPreview() {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   React.useEffect(() => {
-    // route changed -> keep preview visually for a short grace period BUT make underlying page interactive
     if (pathname) hideProjectWithDelay(200, true);
   }, [pathname, hideProjectWithDelay]);
 
-  if (!previewProject) return null; // don't render overlay if nothing to preview
+  if (!previewProject) return null;
 
   return (
     <div
@@ -41,7 +40,11 @@ export default function ProjectPreview() {
       }}
     >
       <main className="mx-auto pt-24">
-        <ProjectContent project={previewProject} isPreview={true} />
+        <ProjectContent
+          project={previewProject}
+          isPreview={true}
+          slug={previewProject.slug}
+        />
       </main>
     </div>
   );
