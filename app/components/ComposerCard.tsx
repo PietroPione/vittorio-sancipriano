@@ -81,7 +81,7 @@ const ComposerCard: React.FC<ComposerCardProps> = ({
       };
 
     if (sub.immagine_o_testo === "img" && sub.immagine && typeof sub.immagine === "object") {
-      const fixedUrl = sub.immagine.url.replace(/^https:\/\//, "http://");
+      const fixedUrl = sub.immagine.url?.replace(/^https:\/\//, "http://") ?? "";
       const { url, alt, width: imgWidth, height: imgHeight } = sub.immagine;
       if (!url || !imgWidth || !imgHeight) return null;
 
