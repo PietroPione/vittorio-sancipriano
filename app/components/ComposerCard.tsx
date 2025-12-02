@@ -5,6 +5,9 @@ import { motion, easeOut } from "framer-motion";
 import Image from "next/image";
 import useMediaQuery from "@/hooks/useMediaQuery";
 
+
+
+
 interface SubItem {
   immagine_o_testo?: "img" | "txt" | "";
   immagine?: {
@@ -78,6 +81,7 @@ const ComposerCard: React.FC<ComposerCardProps> = ({
       };
 
     if (sub.immagine_o_testo === "img" && sub.immagine && typeof sub.immagine === "object") {
+      const fixedUrl = sub.immagine.url.replace(/^https:\/\//, "http://");
       const { url, alt, width: imgWidth, height: imgHeight } = sub.immagine;
       if (!url || !imgWidth || !imgHeight) return null;
 
@@ -104,7 +108,7 @@ const ComposerCard: React.FC<ComposerCardProps> = ({
           {...motionProps}
         >
           <Image
-            src={url}
+            src={fixedUrl}
             alt={alt || "Project image"}
             width={imgWidth}
             height={imgHeight}
