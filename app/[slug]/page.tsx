@@ -23,7 +23,7 @@ async function fetchWPContent(
 ): Promise<WPBase | null> {
   try {
     const res = await fetch(
-      `https://vs.ferdinandocambiale.com/wp-json/wp/v2/${type}?slug=${slug}`,
+      `http://vs.ferdinandocambiale.com/wp-json/wp/v2/${type}?slug=${slug}`,
       { next: { revalidate: 3600 } }
     );
     if (!res.ok) return null;
@@ -40,11 +40,11 @@ export async function generateStaticParams() {
   try {
     const [projectsRes, pagesRes] = await Promise.all([
       fetch(
-        "https://vs.ferdinandocambiale.com/wp-json/wp/v2/progetto?_fields=slug&per_page=100",
+        "http://vs.ferdinandocambiale.com/wp-json/wp/v2/progetto?_fields=slug&per_page=100",
         { next: { revalidate: 3600 } }
       ),
       fetch(
-        "https://vs.ferdinandocambiale.com/wp-json/wp/v2/pages?_fields=slug&per_page=100",
+        "http://vs.ferdinandocambiale.com/wp-json/wp/v2/pages?_fields=slug&per_page=100",
         { next: { revalidate: 3600 } }
       ),
     ]);

@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useProjectPreview } from "./ProjectPreviewProvider";
 
@@ -22,13 +21,22 @@ interface ProjectsMenuProps {
 }
 
 export default function ProjectsMenu({ projects }: ProjectsMenuProps) {
-  const { showProject, hideProjectWithDelay } = useProjectPreview();
+  const { previewProject, showProject, hideProjectWithDelay, hideProject, savePreviewScrollForNavigation } = useProjectPreview();
   const router = useRouter();
 
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, slug: string) => {
+  const handleClick = async (e: React.MouseEvent<HTMLAnchorElement>, proj: Progetto) => {
     e.preventDefault();
-    showProject(null);
-    router.push(`/${slug}`);
+
+    // If the preview is already showing this project we want to preserve visual position:
+    if (previewProject && previewProject.id === proj.id) {
+      // copy overlay scroll into saved value (used by page) and make underlying interactive while we navigate
+      savePreviewScrollForNavigation();
+      hideProjectWithDelay(200, true);
+    } else {
+      hideProject();
+    }
+
+    await router.push(`/${proj.slug}`);
   };
 
   const handleMouseEnter = (proj: Progetto) => {
@@ -49,11 +57,11 @@ export default function ProjectsMenu({ projects }: ProjectsMenuProps) {
 
         return (
           <React.Fragment key={proj.id}>
-            <Link
+            <a
               href={`/${proj.slug}`}
               onMouseEnter={() => handleMouseEnter(proj)}
               onMouseLeave={handleMouseLeave}
-              onClick={(e) => handleClick(e, proj.slug)}
+              onClick={(e) => handleClick(e, proj)}
               className="cursor-pointer relative z-50 flex items-start whitespace-nowrap"
             >
               <span
@@ -66,7 +74,7 @@ export default function ProjectsMenu({ projects }: ProjectsMenuProps) {
                   dangerouslySetInnerHTML={{ __html: data }}
                 />
               )}
-            </Link>
+            </a>
             {i < projects.length - 1 && (
               <span className="mx-1 hidden lg:block text-4xl font-light relative z-50">
                 /

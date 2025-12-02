@@ -16,7 +16,7 @@ interface Progetto {
 async function getProjects(): Promise<Progetto[]> {
   try {
     const res = await fetch(
-      `https://vs.ferdinandocambiale.com/wp-json/wp/v2/progetto?per_page=100`,
+      `http://vs.ferdinandocambiale.com/wp-json/wp/v2/progetto?per_page=100`,
       { next: { revalidate: 3600 } }
     );
     if (!res.ok) {

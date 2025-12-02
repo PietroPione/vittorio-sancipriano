@@ -24,7 +24,7 @@ type ThemeData = {
 async function getMenuItems(): Promise<MenuItem[]> {
   try {
     const res = await fetch(
-      `https://vs.ferdinandocambiale.com/wp-json/wp/v2/menu`,
+      `http://vs.ferdinandocambiale.com/wp-json/wp/v2/menu`,
       { next: { revalidate: 3600 } }
     );
     if (!res.ok) {
@@ -39,7 +39,7 @@ async function getMenuItems(): Promise<MenuItem[]> {
 }
 
 async function getThemeData(): Promise<ThemeData> {
-  const res = await fetch("https://vs.ferdinandocambiale.com/wp-json/wp/v2/options", {
+  const res = await fetch("http://vs.ferdinandocambiale.com/wp-json/wp/v2/options", {
     next: { revalidate: 3600 },
   });
 
