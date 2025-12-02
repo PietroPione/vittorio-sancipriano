@@ -1,4 +1,6 @@
 import ProjectsMenu from "../components/ProjectsMenu";
+import { Progetto } from "@/types/Progetto";
+
 
 // Definizione dei tipi per i dati dei progetti, allineati con ComposerCard.tsx
 interface ImageAcf {
@@ -24,17 +26,6 @@ interface ComposerItem {
   [key: string]: any;
 }
 
-interface Progetto {
-  id: number;
-  slug: string;
-  title: { rendered: string };
-  link: string;
-  acf: {
-    composer: ComposerItem[];
-    titolo_personalizzato?: string;
-    data?: string;
-  };
-}
 
 async function getProjects(): Promise<Progetto[]> {
   try {

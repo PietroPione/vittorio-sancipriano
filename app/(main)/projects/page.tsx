@@ -1,17 +1,8 @@
 import React from "react";
 import ProjectsMenu from "@/components/ProjectsMenu";
 
-interface Progetto {
-  id: number;
-  slug: string;
-  title: { rendered: string };
-  link: string;
-  acf: {
-    composer: any[];
-    titolo_personalizzato?: string;
-    data?: string;
-  };
-}
+import { Progetto } from "@/types/Progetto";
+
 
 async function getProjects(): Promise<Progetto[]> {
   try {

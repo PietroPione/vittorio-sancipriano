@@ -9,15 +9,8 @@ interface ComposerItem {
     [key: string]: any;
 }
 
-interface Progetto {
-    id: number;
-    slug: string;
-    title: { rendered: string };
-    acf: {
-        composer: ComposerItem[];
-        titolo_personalizzato?: string;
-    };
-}
+import { Progetto } from "@/types/Progetto";
+
 
 interface ProjectContentProps {
     project: Progetto;

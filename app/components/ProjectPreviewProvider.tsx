@@ -2,13 +2,8 @@
 
 import React, { createContext, useContext, useRef, useState, ReactNode } from "react";
 
-interface Progetto {
-  id: number;
-  slug: string;
-  title: { rendered: string };
-  link?: string;
-  acf?: any;
-}
+import { Progetto } from "@/types/Progetto";
+
 
 type ProjectPreviewContextType = {
   previewProject: Progetto | null;
