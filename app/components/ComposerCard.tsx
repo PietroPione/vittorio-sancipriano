@@ -77,7 +77,7 @@ const ComposerCard: React.FC<ComposerCardProps> = ({
         variants: itemVariants,
       };
 
-    if (sub.immagine_o_testo === "img" && sub.immagine && sub.immagine !== false) {
+    if (sub.immagine_o_testo === "img" && sub.immagine && typeof sub.immagine === "object") {
       const { url, alt, width: imgWidth, height: imgHeight } = sub.immagine;
       if (!url || !imgWidth || !imgHeight) return null;
 
