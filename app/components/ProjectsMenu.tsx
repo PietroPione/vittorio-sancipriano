@@ -30,13 +30,24 @@ export default function ProjectsMenu({ projects }: ProjectsMenuProps) {
     await router.push(`/${proj.slug}`);
   };
 
+  let hoverTimeout: any;
+
   const handleMouseEnter = (proj: Progetto) => {
-    if (window.innerWidth >= 768) showProject(proj); // solo da md in su
+    if (window.innerWidth < 768) return;
+
+    clearTimeout(hoverTimeout);
+    hoverTimeout = setTimeout(() => {
+      showProject(proj);
+    }, 120); // 🟢 ritarda la preview, zero flickering
   };
 
   const handleMouseLeave = () => {
-    if (window.innerWidth >= 768) hideProjectWithDelay(); // solo da md in su
+    if (window.innerWidth < 768) return;
+    clearTimeout(hoverTimeout);
+    hideProjectWithDelay(120); // riduce il lampeggio
   };
+
+
 
   if (!projects || !Array.isArray(projects) || projects.length === 0) return null;
 
