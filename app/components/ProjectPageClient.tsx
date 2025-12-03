@@ -24,7 +24,13 @@ export default function ProjectPageClient({
   return (
     <ProjectPreviewProvider>
       <div className="mx-auto">
-        <ProjectContent project={project} isPreview={false} slug={slug} />
+        <ProjectContent
+          project={project}
+          slug={slug}
+          isPreview={false}
+
+        />
+
       </div>
     </ProjectPreviewProvider>
   );

@@ -94,7 +94,9 @@ export default async function ProjectPage({ params }: Props) {
         project={project}
         pageTitle={pageTitle}
         slug={slug}
+        isPreview={false}
       />
+
     </main>
   );
 }

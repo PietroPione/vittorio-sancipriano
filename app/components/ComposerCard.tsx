@@ -70,15 +70,20 @@ const ComposerCard: React.FC<ComposerCardProps> = ({
   };
 
   const renderSubItem = (sub: SubItem, idx: number, isMobileLayout: boolean) => {
-    const MotionWrapper = isPreview ? "div" : motion.div;
-    const motionProps = isPreview
-      ? {}
-      : {
+    // true solo se NON sei in preview E se l’elemento NON è img assoluta
+    const shouldAnimate =
+      !isPreview && sub.immagine_o_testo === "txt";
+
+    const MotionWrapper = shouldAnimate ? motion.div : "div";
+
+    const motionProps = shouldAnimate
+      ? {
         initial: "hidden",
         whileInView: "visible",
         viewport: { once: true, amount: 0.2 },
         variants: itemVariants,
-      };
+      }
+      : {};
 
     if (sub.immagine_o_testo === "img" && sub.immagine && typeof sub.immagine === "object") {
       const fixedUrl = sub.immagine.url?.replace(/^https:\/\//, "http://") ?? "";
