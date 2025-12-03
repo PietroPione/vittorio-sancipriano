@@ -9,10 +9,12 @@ export default function ProjectPageClient({
   project,
   pageTitle,
   slug,
+  isPreview = false,
 }: {
   project: any;
   pageTitle: string;
   slug: string;
+  isPreview?: boolean;   // 👈 aggiunto qui
 }) {
   const { setPageTitle } = useTitle();
 
