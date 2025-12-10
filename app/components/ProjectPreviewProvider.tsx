@@ -1,8 +1,9 @@
 "use client";
 
-import React, { createContext, useContext, useRef, useState, ReactNode } from "react";
+import React, { createContext, useContext, useRef, useState, ReactNode, useCallback } from "react";
 
 import { Progetto } from "@/types/Progetto";
+import { usePathname } from "next/navigation";
 
 
 type ProjectPreviewContextType = {
@@ -15,6 +16,9 @@ type ProjectPreviewContextType = {
   setPreviewScroll: (pos: number) => void;
   savePreviewScrollForNavigation: () => void;
   consumeSavedScroll: () => number | null;
+  isNavigating: boolean;
+  startPageTransition: () => void;
+  endPageTransition: () => void;
 };
 
 const ProjectPreviewContext = createContext<ProjectPreviewContextType | undefined>(undefined);
@@ -22,7 +26,11 @@ const ProjectPreviewContext = createContext<ProjectPreviewContextType | undefine
 export const ProjectPreviewProvider = ({ children }: { children: ReactNode }) => {
   const [previewProject, setPreviewProject] = useState<Progetto | null>(null);
   const [overlayPointerEventsEnabled, setOverlayPointerEventsEnabled] = useState<boolean>(true);
+  const [isNavigating, setIsNavigating] = useState<boolean>(false);
   const hideTimer = useRef<NodeJS.Timeout | null>(null);
+  const navigationTimer = useRef<NodeJS.Timeout | null>(null);
+  const pathname = usePathname();
+  const hasMounted = useRef(false);
 
   // track live preview scroll
   const previewScrollRef = useRef<number>(0);
@@ -80,6 +88,35 @@ export const ProjectPreviewProvider = ({ children }: { children: ReactNode }) =>
     return val;
   };
 
+  const startPageTransition = useCallback(() => {
+    if (navigationTimer.current) {
+      clearTimeout(navigationTimer.current);
+    }
+    setIsNavigating(true);
+    // fallback in case navigation does not complete
+    navigationTimer.current = setTimeout(() => setIsNavigating(false), 800);
+  }, []);
+
+  const endPageTransition = useCallback(() => {
+    if (navigationTimer.current) {
+      clearTimeout(navigationTimer.current);
+      navigationTimer.current = null;
+    }
+    setIsNavigating(false);
+  }, []);
+
+  React.useEffect(() => {
+    if (!hasMounted.current) {
+      hasMounted.current = true;
+      return;
+    }
+    // when the pathname changes we can safely end the navigation state
+    const timeout = setTimeout(() => {
+      endPageTransition();
+    }, 150);
+    return () => clearTimeout(timeout);
+  }, [pathname, endPageTransition]);
+
   return (
     <ProjectPreviewContext.Provider
       value={{
@@ -91,6 +128,9 @@ export const ProjectPreviewProvider = ({ children }: { children: ReactNode }) =>
         setPreviewScroll,
         savePreviewScrollForNavigation,
         consumeSavedScroll,
+        isNavigating,
+        startPageTransition,
+        endPageTransition,
       }}
     >
       {children}

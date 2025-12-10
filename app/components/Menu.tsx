@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Logo from "./Logo";
 import Link from "next/link";
 import { useTitle } from "./TitleContext";
+import { useProjectPreview } from "./ProjectPreviewProvider";
 
 export interface MenuItem {
     ID: number;
@@ -47,6 +48,7 @@ const Menu = ({
     const { pageTitle, setPageTitle } = useTitle();
     const [isOpen, setIsOpen] = useState(false);
     const nodeRef = useRef<HTMLDivElement>(null);
+    const { isNavigating } = useProjectPreview();
 
     const startCloseTimer = () => {
         if (inactivityTimer) clearTimeout(inactivityTimer);
@@ -69,8 +71,10 @@ const Menu = ({
 
     if (!menuItems || menuItems.length === 0) return null;
 
+    const headerClasses = `fixed w-full top-4 left-0 right-0 z-100 transition-opacity duration-150 ${isNavigating ? "opacity-0 pointer-events-none" : "opacity-100"}`;
+
     return (
-        <header className="fixed w-full top-4 left-0 right-0 z-100">
+        <header className={headerClasses}>
             <div className="px-4 flex justify-between items-center">
                 {/* Desktop: Logo sempre visibile */}
                 <Link

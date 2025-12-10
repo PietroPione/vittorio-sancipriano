@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { motion, easeOut } from "framer-motion";
 import Image from "next/image";
 import useMediaQuery from "@/hooks/useMediaQuery";
 
@@ -60,31 +59,7 @@ const ComposerCard: React.FC<ComposerCardProps> = ({
     return null;
   }
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.8, ease: easeOut },
-    },
-  };
-
   const renderSubItem = (sub: SubItem, idx: number, isMobileLayout: boolean) => {
-    // true solo se NON sei in preview E se l’elemento NON è img assoluta
-    const shouldAnimate =
-      !isPreview && sub.immagine_o_testo === "txt";
-
-    const MotionWrapper = shouldAnimate ? motion.div : "div";
-
-    const motionProps = shouldAnimate
-      ? {
-        initial: "hidden",
-        whileInView: "visible",
-        viewport: { once: true, amount: 0.2 },
-        variants: itemVariants,
-      }
-      : {};
-
     if (sub.immagine_o_testo === "img" && sub.immagine && typeof sub.immagine === "object") {
       const fixedUrl = sub.immagine.url?.replace(/^https:\/\//, "http://") ?? "";
       const { url, alt, width: imgWidth, height: imgHeight } = sub.immagine;
@@ -105,12 +80,11 @@ const ComposerCard: React.FC<ComposerCardProps> = ({
       };
 
       return (
-        <MotionWrapper
+        <div
           key={`img-${idx}`}
           style={isMobileLayout ? mobileStyle : desktopStyle}
           className="cursor-pointer"
           onClick={() => onImageClick(url)}
-          {...motionProps}
         >
           <Image
             src={fixedUrl}
@@ -121,7 +95,7 @@ const ComposerCard: React.FC<ComposerCardProps> = ({
             className="w-full h-auto select-none"
             priority={idx < 2}
           />
-        </MotionWrapper>
+        </div>
       );
     }
 
@@ -149,10 +123,7 @@ const ComposerCard: React.FC<ComposerCardProps> = ({
           key={`txt-${idx}`}
           style={outerStyle}
         >
-          <MotionWrapper
-            dangerouslySetInnerHTML={{ __html: sub.testo }}
-            {...motionProps}
-          />
+          <div dangerouslySetInnerHTML={{ __html: sub.testo }} />
         </div>
       );
     }

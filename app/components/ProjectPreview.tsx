@@ -11,15 +11,28 @@ export default function ProjectPreview() {
     showProject,
     hideProjectWithDelay,
     overlayPointerEventsEnabled,
-    setPreviewScroll
+    setPreviewScroll,
+    endPageTransition
   } = useProjectPreview();
 
   const pathname = usePathname();
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const hasMounted = useRef(false);
 
   React.useEffect(() => {
-    if (pathname) hideProjectWithDelay(200, true);
-  }, [pathname, hideProjectWithDelay]);
+    if (!hasMounted.current) {
+      hasMounted.current = true;
+      return;
+    }
+
+    if (pathname) {
+      hideProjectWithDelay(260, true);
+      const timeout = setTimeout(() => {
+        endPageTransition();
+      }, 300);
+      return () => clearTimeout(timeout);
+    }
+  }, [pathname, hideProjectWithDelay, endPageTransition]);
 
   if (!previewProject) return null;
 

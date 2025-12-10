@@ -12,22 +12,30 @@ interface ProjectsMenuProps {
 }
 
 export default function ProjectsMenu({ projects }: ProjectsMenuProps) {
-  const { previewProject, showProject, hideProjectWithDelay, hideProject, savePreviewScrollForNavigation } = useProjectPreview();
+  const {
+    showProject,
+    hideProjectWithDelay,
+    hideProject,
+    savePreviewScrollForNavigation,
+    startPageTransition,
+  } = useProjectPreview();
   const router = useRouter();
 
   const handleClick = async (e: React.MouseEvent<HTMLAnchorElement>, proj: Progetto) => {
     e.preventDefault();
 
-    // If the preview is already showing this project we want to preserve visual position:
-    if (previewProject && previewProject.id === proj.id) {
-      // copy overlay scroll into saved value (used by page) and make underlying interactive while we navigate
+    startPageTransition();
+    clearTimeout(hoverTimeout);
+
+    // keep the preview visible as a soft transition while navigating on desktop
+    if (window.innerWidth >= 768) {
+      showProject(proj);
       savePreviewScrollForNavigation();
-      hideProjectWithDelay(200, true);
     } else {
       hideProject();
     }
 
-    await router.push(`/${proj.slug}`);
+    router.push(`/${proj.slug}`);
   };
 
   let hoverTimeout: any;
