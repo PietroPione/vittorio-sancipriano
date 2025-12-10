@@ -5,8 +5,9 @@ import { motion } from 'framer-motion';
 
 const CustomCursor = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [cursorVariant, setCursorVariant] = useState('default');
+  const [cursorVariant, setCursorVariant] = useState<'default' | 'link' | 'click'>('default');
   const [isTouchPointer, setIsTouchPointer] = useState(false);
+  const [isPointerActive, setIsPointerActive] = useState(false);
 
   useEffect(() => {
     // Disable custom cursor on touch / coarse pointer devices (mobile/tablet).
@@ -19,32 +20,45 @@ const CustomCursor = () => {
   useEffect(() => {
     if (isTouchPointer) return;
 
-    const mouseMove = (e: MouseEvent) => {
+    const handlePointerMove = (e: PointerEvent) => {
+      if (e.pointerType !== "mouse") return;
+      setIsPointerActive(true);
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
 
-    const handleMouseDown = () => setCursorVariant('click');
-    const handleMouseUp = () => setCursorVariant('default');
+    const handlePointerLeave = () => setIsPointerActive(false);
+    const handlePointerDown = () => setCursorVariant('click');
+    const handlePointerUp = () => setCursorVariant('default');
 
-    window.addEventListener('mousemove', mouseMove);
-    window.addEventListener('mousedown', handleMouseDown);
-    window.addEventListener('mouseup', handleMouseUp);
+    const isInteractive = (target: EventTarget | null) => {
+      if (!(target instanceof Element)) return false;
+      return target.closest('a, button, [role="button"], input, textarea, select, .cursor-pointer');
+    };
 
-    // Add hover effects for interactive elements
-    const interactiveElements = document.querySelectorAll('a, button, [role="button"], input, .cursor-pointer');
-    interactiveElements.forEach(el => {
-      el.addEventListener('mouseenter', () => setCursorVariant('link'));
-      el.addEventListener('mouseleave', () => setCursorVariant('default'));
-    });
+    const handlePointerOver = (e: PointerEvent) => {
+      if (e.pointerType !== "mouse") return;
+      if (isInteractive(e.target)) setCursorVariant('link');
+    };
+
+    const handlePointerOut = (e: PointerEvent) => {
+      if (e.pointerType !== "mouse") return;
+      if (isInteractive(e.target)) setCursorVariant('default');
+    };
+
+    window.addEventListener('pointermove', handlePointerMove);
+    window.addEventListener('pointerleave', handlePointerLeave);
+    window.addEventListener('pointerdown', handlePointerDown);
+    window.addEventListener('pointerup', handlePointerUp);
+    window.addEventListener('pointerover', handlePointerOver, true);
+    window.addEventListener('pointerout', handlePointerOut, true);
 
     return () => {
-      window.removeEventListener('mousemove', mouseMove);
-      window.removeEventListener('mousedown', handleMouseDown);
-      window.removeEventListener('mouseup', handleMouseUp);
-      interactiveElements.forEach(el => {
-        el.removeEventListener('mouseenter', () => setCursorVariant('link'));
-        el.removeEventListener('mouseleave', () => setCursorVariant('default'));
-      });
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('pointerleave', handlePointerLeave);
+      window.removeEventListener('pointerdown', handlePointerDown);
+      window.removeEventListener('pointerup', handlePointerUp);
+      window.removeEventListener('pointerover', handlePointerOver, true);
+      window.removeEventListener('pointerout', handlePointerOut, true);
     };
   }, [isTouchPointer]);
 
@@ -52,16 +66,16 @@ const CustomCursor = () => {
 
   const variants = {
     default: {
-      x: mousePosition.x - 8,
-      y: mousePosition.y - 8,
+      x: mousePosition.x,
+      y: mousePosition.y,
       height: 16,
       width: 16,
       backgroundColor: 'var(--foreground)',
       mixBlendMode: 'difference' as const,
     },
     link: {
-      x: mousePosition.x - 16,
-      y: mousePosition.y - 16,
+      x: mousePosition.x,
+      y: mousePosition.y,
       height: 32,
       width: 32,
       backgroundColor: 'transparent',
@@ -70,8 +84,8 @@ const CustomCursor = () => {
       mixBlendMode: 'normal' as const,
     },
     click: {
-      x: mousePosition.x - 12,
-      y: mousePosition.y - 12,
+      x: mousePosition.x,
+      y: mousePosition.y,
       height: 24,
       width: 24,
       backgroundColor: 'var(--foreground)',
@@ -84,7 +98,8 @@ const CustomCursor = () => {
       className="fixed top-0 left-0 rounded-full z-[9999] pointer-events-none"
       variants={variants}
       animate={cursorVariant}
-      transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+      style={{ translateX: "-50%", translateY: "-50%", opacity: isPointerActive ? 1 : 0 }}
+      transition={{ type: 'tween', duration: 0.12, ease: "easeOut" }}
     />
   );
 };

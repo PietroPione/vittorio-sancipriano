@@ -4,6 +4,7 @@ import React, { useRef } from "react";
 import { useProjectPreview } from "./ProjectPreviewProvider";
 import ProjectContent from "./ProjectContent";
 import { usePathname } from "next/navigation";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function ProjectPreview() {
   const {
@@ -18,6 +19,8 @@ export default function ProjectPreview() {
   const pathname = usePathname();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const hasMounted = useRef(false);
+  const [visibleProjectId, setVisibleProjectId] = React.useState<number | null>(null);
+  const [fadeKey, setFadeKey] = React.useState<number | null>(null);
 
   React.useEffect(() => {
     if (!hasMounted.current) {
@@ -33,6 +36,16 @@ export default function ProjectPreview() {
       return () => clearTimeout(timeout);
     }
   }, [pathname, hideProjectWithDelay, endPageTransition]);
+
+  React.useEffect(() => {
+    if (!previewProject) return;
+    setVisibleProjectId(previewProject.id);
+    setFadeKey(previewProject.id);
+    // reset scroll when switching to a new preview
+    if (containerRef.current) {
+      containerRef.current.scrollTo({ top: 0, behavior: "auto" });
+    }
+  }, [previewProject]);
 
   if (!previewProject) return null;
 
@@ -53,11 +66,22 @@ export default function ProjectPreview() {
       }}
     >
       <main className="mx-auto pt-24">
-        <ProjectContent
-          project={previewProject}
-          isPreview={true}
-          slug={previewProject.slug}
-        />
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={fadeKey}
+            initial={{ opacity: 0.2 }}
+            animate={{ opacity: 1, transition: { duration: 0.25, ease: "easeOut" } }}
+            exit={{ opacity: 0, transition: { duration: 0.15, ease: "easeIn" } }}
+          >
+            {visibleProjectId === previewProject.id && (
+              <ProjectContent
+                project={previewProject}
+                isPreview={true}
+                slug={previewProject.slug}
+              />
+            )}
+          </motion.div>
+        </AnimatePresence>
       </main>
     </div>
   );

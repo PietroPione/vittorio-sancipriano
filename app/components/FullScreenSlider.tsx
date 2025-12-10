@@ -2,6 +2,9 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import Logo from "./Logo";
+import { useTitle } from "./TitleContext";
 
 interface FullScreenSliderProps {
   images: { src: string; alt: string }[];
@@ -15,6 +18,7 @@ const FullScreenSlider: React.FC<FullScreenSliderProps> = ({
   onClose,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
+  const { pageTitle } = useTitle();
 
   const handleNext = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
@@ -40,11 +44,25 @@ const FullScreenSlider: React.FC<FullScreenSliderProps> = ({
   }, [handleNext, handlePrev, onClose]);
 
   const currentImage = images[currentIndex];
+  const imageSrc = currentImage?.src
+    ? currentImage.src.replace(/^https:\/\//, "http://")
+    : "";
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[var(--background)] text-[var(--foreground)] transition-colors duration-300">
+    <div className="fixed inset-0 z-[120] flex flex-col items-center justify-center bg-[var(--background)] text-[var(--foreground)] transition-colors duration-300">
 
-      <div className="absolute top-0 right-0 p-4 md:p-6 z-10">
+      <div className="absolute top-4 left-4 md:top-5 md:left-6 z-[130]">
+        <Link href="/" onClick={onClose}>
+          <h1
+            className="inline-block max-w-full truncate text-[var(--foreground)] text-xs md:text-sm whitespace-nowrap overflow-hidden"
+            dangerouslySetInnerHTML={{
+              __html: `Vittorio Sancipriano${pageTitle ? ` - ${pageTitle}` : ""}`,
+            }}
+          />
+        </Link>
+      </div>
+
+      <div className="absolute top-4 right-4 md:top-5 md:right-6 z-[130]">
         <button
           onClick={onClose}
           className="p-2 transition-transform duration-200 hover:scale-110"
@@ -65,9 +83,9 @@ const FullScreenSlider: React.FC<FullScreenSliderProps> = ({
         </button>
 
         <div className="relative w-full h-[80vh] max-w-screen-lg mx-auto">
-          {currentImage && (
+          {currentImage && imageSrc && (
             <Image
-              src={currentImage.src}
+              src={imageSrc}
               alt={currentImage.alt}
               fill
               style={{ objectFit: "contain" }}
