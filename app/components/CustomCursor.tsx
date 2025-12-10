@@ -6,8 +6,19 @@ import { motion } from 'framer-motion';
 const CustomCursor = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [cursorVariant, setCursorVariant] = useState('default');
+  const [isTouchPointer, setIsTouchPointer] = useState(false);
 
   useEffect(() => {
+    // Disable custom cursor on touch / coarse pointer devices (mobile/tablet).
+    if (typeof window !== "undefined") {
+      const coarse = window.matchMedia("(pointer: coarse)").matches;
+      setIsTouchPointer(coarse);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isTouchPointer) return;
+
     const mouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
@@ -35,7 +46,9 @@ const CustomCursor = () => {
         el.removeEventListener('mouseleave', () => setCursorVariant('default'));
       });
     };
-  }, []);
+  }, [isTouchPointer]);
+
+  if (isTouchPointer) return null;
 
   const variants = {
     default: {
