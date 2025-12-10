@@ -199,20 +199,42 @@ const Menu = ({
                         )}
                     </AnimatePresence>
 
-                    <Logo
-                        className="w-6 h-6 text-[var(--foreground)] cursor-pointer hidden md:block z-100"
-                        onClick={() => setIsOpen(!isOpen)}
-                        onMouseEnter={cancelCloseTimer}
-                        onMouseLeave={startCloseTimer}
-                    />
+                    {isOpen ? (
+                        <button
+                            aria-label="Chiudi menu"
+                            className="w-6 h-6 text-[var(--foreground)] cursor-pointer hidden md:block z-100 p-1"
+                            onClick={() => setIsOpen(false)}
+                            onMouseEnter={cancelCloseTimer}
+                            onMouseLeave={startCloseTimer}
+                        >
+                            ✕
+                        </button>
+                    ) : (
+                        <Logo
+                            className="w-6 h-6 text-[var(--foreground)] cursor-pointer hidden md:block z-100"
+                            onClick={() => setIsOpen(!isOpen)}
+                            onMouseEnter={cancelCloseTimer}
+                            onMouseLeave={startCloseTimer}
+                        />
+                    )}
                 </div>
 
                 {/* Mobile: Logo toggle a destra */}
                 <div className="md:hidden">
-                    <Logo
-                        className="w-6 h-6 text-[var(--foreground)] cursor-pointer"
-                        onClick={() => setIsOpen(!isOpen)}
-                    />
+                    {isOpen ? (
+                        <button
+                            aria-label="Chiudi menu"
+                            className="w-6 h-6 text-[var(--foreground)] cursor-pointer p-1"
+                            onClick={() => setIsOpen(false)}
+                        >
+                            ✕
+                        </button>
+                    ) : (
+                        <Logo
+                            className="w-6 h-6 text-[var(--foreground)] cursor-pointer"
+                            onClick={() => setIsOpen(true)}
+                        />
+                    )}
                 </div>
             </div>
         </header>
