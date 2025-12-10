@@ -142,13 +142,18 @@ const ComposerCard: React.FC<ComposerCardProps> = ({
         color: "var(--foreground)",
       };
 
+      const outerStyle = isMobileLayout ? mobileStyle : desktopStyle;
+
       return (
-        <MotionWrapper
+        <div
           key={`txt-${idx}`}
-          style={isMobileLayout ? mobileStyle : desktopStyle}
-          dangerouslySetInnerHTML={{ __html: sub.testo }}
-          {...motionProps}
-        />
+          style={outerStyle}
+        >
+          <MotionWrapper
+            dangerouslySetInnerHTML={{ __html: sub.testo }}
+            {...motionProps}
+          />
+        </div>
       );
     }
 
