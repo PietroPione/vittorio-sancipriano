@@ -65,7 +65,7 @@ const ProjectContent: React.FC<ProjectContentProps> = ({
 
     return (
         <>
-            <div className="space-y-8">
+            <div className="md:space-y-8">
                 {project.acf.composer?.map((item: ComposerItem, index: number) => (
                     <ComposerCard
                         key={index}

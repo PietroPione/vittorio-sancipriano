@@ -53,7 +53,7 @@ export default function ProjectPreview() {
     <div
       ref={containerRef}
       data-testid="project-preview-container"
-      className="fixed inset-0 z-40 transition-opacity duration-200 opacity-100 overflow-y-auto"
+      className="fixed inset-0 z-40 transition-opacity duration-200 opacity-100 overflow-hidden"
       style={{
         pointerEvents: overlayPointerEventsEnabled ? "auto" : "none",
         backgroundColor: "var(--background)"

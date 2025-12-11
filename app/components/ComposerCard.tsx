@@ -112,7 +112,7 @@ const ComposerCard: React.FC<ComposerCardProps> = ({
       const mobileStyle: React.CSSProperties = {
         width: "90%",
         textAlign: "start",
-        margin: "2rem auto",
+        margin: "0 auto 2rem",
         color: "var(--foreground)",
       };
 
@@ -158,7 +158,7 @@ const ComposerCard: React.FC<ComposerCardProps> = ({
   }
 
   return (
-    <div className="flex flex-col items-center w-full py-8">
+    <div className="flex flex-col items-center w-full mb-8">
       {subItems.map((sub, i) => renderSubItem(sub, i, true))}
     </div>
   );
