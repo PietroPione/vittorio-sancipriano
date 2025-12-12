@@ -158,7 +158,7 @@ const ComposerCard: React.FC<ComposerCardProps> = ({
   }
 
   return (
-    <div className="flex flex-col items-center w-full mb-8">
+    <div className="flex flex-col items-center w-full">
       {subItems.map((sub, i) => renderSubItem(sub, i, true))}
     </div>
   );
