@@ -4,9 +4,9 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: "http", // 👈 CAMBIATO QUI
-        hostname: "vs.ferdinandocambiale.com",
-        pathname: "/**", // 👈 CONSIGLIATO
+        protocol: "https",
+        hostname: "www.vittoriosancipriano.com",
+        pathname: "/**",
       },
     ],
     unoptimized: false, // va bene così

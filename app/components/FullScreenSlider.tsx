@@ -45,7 +45,7 @@ const FullScreenSlider: React.FC<FullScreenSliderProps> = ({
 
   const currentImage = images[currentIndex];
   const imageSrc = currentImage?.src
-    ? currentImage.src.replace(/^https:\/\//, "http://")
+    ? currentImage.src.replace(/^http:\/\//, "https://")
     : "";
 
   return (

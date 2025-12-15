@@ -61,7 +61,7 @@ const ComposerCard: React.FC<ComposerCardProps> = ({
 
   const renderSubItem = (sub: SubItem, idx: number, isMobileLayout: boolean) => {
     if (sub.immagine_o_testo === "img" && sub.immagine && typeof sub.immagine === "object") {
-      const fixedUrl = sub.immagine.url?.replace(/^https:\/\//, "http://") ?? "";
+      const fixedUrl = sub.immagine.url?.replace(/^http:\/\//, "https://") ?? "";
       const { url, alt, width: imgWidth, height: imgHeight } = sub.immagine;
       if (!url || !imgWidth || !imgHeight) return null;
 

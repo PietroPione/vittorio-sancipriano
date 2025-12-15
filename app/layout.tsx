@@ -14,6 +14,10 @@ type ThemeOptions = {
   colore_light: string;
   dimensione_data: string;
   dimensione_titoli: string;
+  messaggio_cookie?: string;
+  messaggio_di_piu?: string;
+  link_tasto_cookie?: string;
+  testo_tasto?: string;
 };
 
 type ThemeData = {
@@ -24,7 +28,7 @@ type ThemeData = {
 async function getMenuItems(): Promise<MenuItem[]> {
   try {
     const res = await fetch(
-      `http://vs.ferdinandocambiale.com/wp-json/wp/v2/menu`,
+      `https://www.vittoriosancipriano.com/wp-json/wp/v2/menu`,
       { next: { revalidate: 3600 } }
     );
     if (!res.ok) {
@@ -39,8 +43,9 @@ async function getMenuItems(): Promise<MenuItem[]> {
 }
 
 async function getThemeData(): Promise<ThemeData> {
-  const res = await fetch("http://vs.ferdinandocambiale.com/wp-json/wp/v2/options", {
-    next: { revalidate: 3600 },
+  const res = await fetch("https://www.vittoriosancipriano.com/wp-json/wp/v2/options", {
+    // No cache to ensure newly added option fields are picked up immediately
+    next: { revalidate: 0 },
   });
 
   if (!res.ok) {
@@ -51,6 +56,10 @@ async function getThemeData(): Promise<ThemeData> {
         colore_light: "#ffffff",
         dimensione_data: "2",
         dimensione_titoli: "3",
+        messaggio_cookie: "",
+        messaggio_di_piu: "",
+        link_tasto_cookie: "",
+        testo_tasto: "",
       },
     };
   }
@@ -58,7 +67,10 @@ async function getThemeData(): Promise<ThemeData> {
   const data = await res.json();
 
   if (data && typeof data === "object") {
-    return { acf: data as ThemeOptions };
+    const fromAcf =
+      "acf" in data && data.acf && typeof data.acf === "object" ? data.acf : {};
+    const normalized = { ...(data as Record<string, unknown>), ...(fromAcf as Record<string, unknown>) };
+    return { acf: normalized as ThemeOptions };
   }
 
   return {
@@ -67,6 +79,10 @@ async function getThemeData(): Promise<ThemeData> {
       colore_light: "#ffffff",
       dimensione_data: "2",
       dimensione_titoli: "3",
+      messaggio_cookie: "",
+      messaggio_di_piu: "",
+      link_tasto_cookie: "",
+      testo_tasto: "",
     },
   };
 }
@@ -81,9 +97,6 @@ export default async function RootLayout({
     getMenuItems(),
   ]);
   const theme = themeData.acf;
-
-  console.log("Colore Light from API (Primary):", theme.colore_light);
-  console.log("Colore Dark from API (Secondary):", theme.colore_dark);
 
   return (
     <html
@@ -109,6 +122,12 @@ export default async function RootLayout({
               theme={{
                 background: theme.colore_light,
                 foreground: theme.colore_dark,
+              }}
+              cookieContent={{
+                message: theme.messaggio_cookie || "",
+                moreText: theme.messaggio_di_piu || "",
+                linkHref: theme.link_tasto_cookie || "",
+                buttonText: theme.testo_tasto || "",
               }}
             >
               <Menu menuItems={menuItems} />

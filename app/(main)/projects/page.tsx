@@ -7,7 +7,7 @@ import { Progetto } from "@/types/Progetto";
 async function getProjects(): Promise<Progetto[]> {
   try {
     const res = await fetch(
-      `http://vs.ferdinandocambiale.com/wp-json/wp/v2/progetto?per_page=100`,
+      `https://www.vittoriosancipriano.com/wp-json/wp/v2/progetto?per_page=100`,
       { next: { revalidate: 3600 } }
     );
     if (!res.ok) {
