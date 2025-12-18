@@ -25,7 +25,7 @@ export default async function ProjectsPage() {
   const projects = await getProjects();
 
   return (
-    <main className="container mx-auto px-4">
+    <main className="container mx-auto px-4 min-h-[93vh]">
       <ProjectsMenu projects={projects} />
     </main>
   );

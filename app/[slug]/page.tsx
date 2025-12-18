@@ -85,7 +85,7 @@ export default async function ProjectPage({ params }: Props) {
     project.acf?.titolo_personalizzato || project.title?.rendered || "";
 
   return (
-    <main className="mx-auto pt-24">
+    <main className="mx-auto pt-24 min-h-[93vh]">
       <h1
         className="sr-only"
         dangerouslySetInnerHTML={{ __html: pageTitle }}

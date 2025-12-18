@@ -13,6 +13,20 @@ export interface MenuItem {
     url: string;
 }
 
+function normalizeMenuHref(rawHref: string): string {
+    const trimmed = (rawHref || "").trim();
+    if (!trimmed) return "/";
+    if (trimmed.startsWith("#")) return trimmed;
+    if (trimmed.startsWith("/")) return trimmed;
+
+    try {
+        const url = new URL(trimmed);
+        return `${url.pathname}${url.search}${url.hash}` || "/";
+    } catch {
+        return trimmed;
+    }
+}
+
 const menuVariants = {
     open: {
         opacity: 1,
@@ -47,7 +61,7 @@ const Menu = ({
 }) => {
     const { pageTitle, setPageTitle } = useTitle();
     const [isOpen, setIsOpen] = useState(false);
-    const nodeRef = useRef<HTMLDivElement>(null);
+    const menuRef = useRef<HTMLElement>(null);
     const { isNavigating } = useProjectPreview();
 
     const startCloseTimer = () => {
@@ -60,21 +74,28 @@ const Menu = ({
     };
 
     useEffect(() => {
-        const handleOutsideClick = (e: MouseEvent) => {
-            if (nodeRef.current && !nodeRef.current.contains(e.target as Node)) {
+        if (!isOpen) return;
+
+        const handleOutsidePointerDown = (e: PointerEvent) => {
+            const target = e.target as Node | null;
+            if (!target) return;
+
+            if (menuRef.current && !menuRef.current.contains(target)) {
                 setIsOpen(false);
             }
         };
-        document.addEventListener("mousedown", handleOutsideClick);
-        return () => document.removeEventListener("mousedown", handleOutsideClick);
-    }, []);
+
+        document.addEventListener("pointerdown", handleOutsidePointerDown);
+        return () =>
+            document.removeEventListener("pointerdown", handleOutsidePointerDown);
+    }, [isOpen]);
 
     if (!menuItems || menuItems.length === 0) return null;
 
-    const headerClasses = `fixed w-full top-4 left-0 right-0 z-100 transition-opacity duration-150 ${isNavigating ? "opacity-0 pointer-events-none" : "opacity-100"}`;
+    const headerClasses = `fixed w-full top-4 left-0 right-0 z-[300] transition-opacity duration-150 ${isNavigating ? "opacity-0 pointer-events-none" : "opacity-100"}`;
 
     return (
-        <header className={headerClasses}>
+        <header ref={menuRef} className={headerClasses}>
             <div className="px-4 flex justify-between items-center">
                 {/* Desktop: Logo sempre visibile */}
                 <Link
@@ -123,7 +144,7 @@ const Menu = ({
                                             onClick={() => setIsOpen(false)}
                                         >
                                             <Link
-                                                href={item.url}
+                                                href={normalizeMenuHref(item.url)}
                                                 className="hover:text-primary whitespace-nowrap"
                                             >
                                                 {item.title}
@@ -150,7 +171,6 @@ const Menu = ({
 
                 {/* Desktop: Menu dropdown a destra */}
                 <div
-                    ref={nodeRef}
                     className="relative hidden md:flex items-center"
                     onMouseLeave={startCloseTimer}
                     onMouseEnter={cancelCloseTimer}
@@ -187,7 +207,7 @@ const Menu = ({
                                             onClick={() => setIsOpen(false)}
                                         >
                                             <Link
-                                                href={item.title}
+                                                href={normalizeMenuHref(item.url)}
                                                 className="hover:text-primary whitespace-nowrap"
                                             >
                                                 {item.title}
@@ -202,7 +222,7 @@ const Menu = ({
                     {isOpen ? (
                         <button
                             aria-label="Chiudi menu"
-                            className="w-6 h-6 text-[var(--foreground)] cursor-pointer hidden md:block z-100 p-1"
+                            className="w-6 h-6 text-[var(--foreground)] cursor-pointer hidden md:block z-[100] p-1"
                             onClick={() => setIsOpen(false)}
                             onMouseEnter={cancelCloseTimer}
                             onMouseLeave={startCloseTimer}
@@ -211,7 +231,7 @@ const Menu = ({
                         </button>
                     ) : (
                         <Logo
-                            className="w-6 h-6 text-[var(--foreground)] cursor-pointer hidden md:block z-100"
+                            className="w-6 h-6 text-[var(--foreground)] cursor-pointer hidden md:block z-[100]"
                             onClick={() => setIsOpen(!isOpen)}
                             onMouseEnter={cancelCloseTimer}
                             onMouseLeave={startCloseTimer}
