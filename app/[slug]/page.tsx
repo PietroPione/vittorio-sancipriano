@@ -23,7 +23,7 @@ async function fetchWPContent(
 ): Promise<WPBase | null> {
   try {
     const res = await fetch(
-      `https://www.vittoriosancipriano.com/wp-json/wp/v2/${type}?slug=${slug}`,
+      `https://www.backendvittoriosancipriano.com/wp-json/wp/v2/${type}?slug=${slug}`,
       { cache: "no-store" }
     );
     if (!res.ok) return null;
@@ -40,11 +40,11 @@ export async function generateStaticParams() {
   try {
     const [projectsRes, pagesRes] = await Promise.all([
       fetch(
-        "https://www.vittoriosancipriano.com/wp-json/wp/v2/progetto?_fields=slug&per_page=100",
+        "https://www.backendvittoriosancipriano.com/wp-json/wp/v2/progetto?_fields=slug&per_page=100",
         { cache: "no-store" }
       ),
       fetch(
-        "https://www.vittoriosancipriano.com/wp-json/wp/v2/pages?_fields=slug&per_page=100",
+        "https://www.backendvittoriosancipriano.com/wp-json/wp/v2/pages?_fields=slug&per_page=100",
         { cache: "no-store" }
       ),
     ]);

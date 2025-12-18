@@ -32,7 +32,7 @@ type ThemeData = {
 async function getMenuItems(): Promise<MenuItem[]> {
   try {
     const res = await fetch(
-      `https://www.vittoriosancipriano.com/wp-json/wp/v2/menu`,
+      `https://www.backendvittoriosancipriano.com/wp-json/wp/v2/menu`,
       { next: { revalidate: 3600 } }
     );
     if (!res.ok) {
@@ -47,7 +47,7 @@ async function getMenuItems(): Promise<MenuItem[]> {
 }
 
 async function getThemeData(): Promise<ThemeData> {
-  const res = await fetch("https://www.vittoriosancipriano.com/wp-json/wp/v2/options", {
+  const res = await fetch("https://www.backendvittoriosancipriano.com/wp-json/wp/v2/options", {
     // No cache to ensure newly added option fields are picked up immediately
     next: { revalidate: 0 },
   });
