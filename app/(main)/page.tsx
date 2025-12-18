@@ -51,7 +51,7 @@ export default async function Home() {
 
   return (
     <div>
-      <main className="px-4">
+      <main className="px-4 h-[93vh]">
         <ProjectsMenu projects={projects} />
       </main>
     </div>

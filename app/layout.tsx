@@ -3,6 +3,7 @@ import Menu, { MenuItem } from "@/components/Menu";
 import { TitleProvider } from "@/components/TitleContext";
 import { ProjectPreviewProvider } from "@/components/ProjectPreviewProvider";
 import ProjectPreview from "@/components/ProjectPreview";
+import BottomRightLinks from "@/components/BottomRightLinks";
 
 import type { Metadata } from "next";
 import "./globals.css";
@@ -14,6 +15,9 @@ type ThemeOptions = {
   colore_light: string;
   dimensione_data: string;
   dimensione_titoli: string;
+  testo_credit?: string;
+  link_credits?: string;
+  testo_cookie_policy?: string;
   messaggio_cookie?: string;
   messaggio_di_piu?: string;
   link_tasto_cookie?: string;
@@ -60,6 +64,9 @@ async function getThemeData(): Promise<ThemeData> {
         messaggio_di_piu: "",
         link_tasto_cookie: "",
         testo_tasto: "",
+        testo_credit: "",
+        link_credits: "",
+        testo_cookie_policy: "",
       },
     };
   }
@@ -83,6 +90,9 @@ async function getThemeData(): Promise<ThemeData> {
       messaggio_di_piu: "",
       link_tasto_cookie: "",
       testo_tasto: "",
+      testo_credit: "",
+      link_credits: "",
+      testo_cookie_policy: "",
     },
   };
 }
@@ -132,6 +142,12 @@ export default async function RootLayout({
             >
               <Menu menuItems={menuItems} />
               {children}
+              <BottomRightLinks
+                creditsText={theme.testo_credit || "Credits"}
+                creditsHref={theme.link_credits || "/credits"}
+                cookiePolicyText={theme.testo_cookie_policy || "Cookie policy"}
+                cookiePolicyHref={theme.link_tasto_cookie || "/cookie-policy"}
+              />
               <ThemeToggle />
             </ClientLayout>
           </ProjectPreviewProvider>
