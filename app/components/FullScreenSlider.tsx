@@ -76,7 +76,7 @@ const FullScreenSlider: React.FC<FullScreenSliderProps> = ({
 
         <button
           onClick={handlePrev}
-          className="absolute z-10 left-4 md:left-8 top-1/2 -translate-y-1/2 [writing-mode:vertical-rl] text-lg tracking-widest uppercase p-4 min-w-[60px] text-center transition-transform duration-200 hover:-translate-x-1 text-[var(--color-primary)] md:text-[var(--foreground)]"
+          className="absolute z-10 left-4 md:left-8 top-1/2 -translate-y-1/2 [writing-mode:vertical-rl] text-lg tracking-widest uppercase p-4 min-w-[60px] text-center transition-transform duration-200 hover:-translate-x-1 text-[var(--color-primary)] lg:text-[var(--foreground)]"
           aria-label="Previous image"
         >
           Previous
@@ -97,7 +97,7 @@ const FullScreenSlider: React.FC<FullScreenSliderProps> = ({
 
         <button
           onClick={handleNext}
-          className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 [writing-mode:vertical-rl] text-lg tracking-widest uppercase p-4 min-w-[60px] text-center transition-transform duration-200 hover:translate-x-1 text-[var(--color-primary)] md:text-[var(--foreground)]"
+          className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 [writing-mode:vertical-rl] text-lg tracking-widest uppercase p-4 min-w-[60px] text-center transition-transform duration-200 hover:translate-x-1 text-[var(--color-primary)] lg:text-[var(--foreground)]"
           aria-label="Next image"
         >
           Next
