@@ -4,9 +4,6 @@ import React from "react";
 import Image from "next/image";
 import useMediaQuery from "@/hooks/useMediaQuery";
 
-
-
-
 interface SubItem {
   immagine_o_testo?: "img" | "txt" | "";
   immagine?: {
@@ -43,6 +40,7 @@ const ComposerCard: React.FC<ComposerCardProps> = ({
   slug,
 }) => {
   const isMobile = useMediaQuery("(max-width: 768px)");
+  const isTablet = useMediaQuery("(max-width: 1024px)");
 
   if (!item) return null;
 
@@ -59,7 +57,14 @@ const ComposerCard: React.FC<ComposerCardProps> = ({
     return null;
   }
 
-  const renderSubItem = (sub: SubItem, idx: number, isMobileLayout: boolean) => {
+  const renderSubItem = (
+    sub: SubItem,
+    idx: number,
+    layout: "desktop" | "tablet" | "mobile"
+  ) => {
+    const isMobileLayout = layout === "mobile";
+    const isTabletLayout = layout === "tablet";
+
     if (sub.immagine_o_testo === "img" && sub.immagine && typeof sub.immagine === "object") {
       const fixedUrl = sub.immagine.url?.replace(/^http:\/\//, "https://") ?? "";
       const { url, alt, width: imgWidth, height: imgHeight } = sub.immagine;
@@ -79,10 +84,14 @@ const ComposerCard: React.FC<ComposerCardProps> = ({
         marginBottom: "2rem",
       };
 
+      const tabletStyle: React.CSSProperties = {
+        width: "100%",
+      };
+
       return (
         <div
           key={`img-${idx}`}
-          style={isMobileLayout ? mobileStyle : desktopStyle}
+          style={isMobileLayout ? mobileStyle : isTabletLayout ? tabletStyle : desktopStyle}
           className="cursor-pointer"
           onClick={() => onImageClick(url)}
         >
@@ -116,7 +125,16 @@ const ComposerCard: React.FC<ComposerCardProps> = ({
         color: "var(--foreground)",
       };
 
-      const outerStyle = isMobileLayout ? mobileStyle : desktopStyle;
+      const tabletStyle: React.CSSProperties = {
+        width: "100%",
+        color: "var(--foreground)",
+      };
+
+      const outerStyle = isMobileLayout
+        ? mobileStyle
+        : isTabletLayout
+        ? tabletStyle
+        : desktopStyle;
 
       return (
         <div
@@ -132,6 +150,12 @@ const ComposerCard: React.FC<ComposerCardProps> = ({
   };
 
   const isBioOrContact = slug === "bio" || slug === "contact";
+  const isTabletLayout = isTablet && !isMobile;
+  const parsedColumns = Number.parseInt(item.select_photo_qty || "", 10);
+  const columnsCount = Math.max(
+    1,
+    Math.min(subItems.length, Number.isFinite(parsedColumns) ? parsedColumns : subItems.length)
+  );
 
   if (!isMobile) {
     if (isBioOrContact) {
@@ -141,8 +165,19 @@ const ComposerCard: React.FC<ComposerCardProps> = ({
           style={{ minHeight: "100vh" }}
         >
           <div className="w-full max-w-4xl px-4">
-            {subItems.map((sub, i) => renderSubItem(sub, i, true))}
+            {subItems.map((sub, i) => renderSubItem(sub, i, "mobile"))}
           </div>
+        </div>
+      );
+    }
+
+    if (isTabletLayout) {
+      return (
+        <div
+          className="grid w-full gap-6 px-4 py-8"
+          style={{ gridTemplateColumns: `repeat(${columnsCount}, minmax(0, 1fr))` }}
+        >
+          {subItems.map((sub, i) => renderSubItem(sub, i, "tablet"))}
         </div>
       );
     }
@@ -152,14 +187,14 @@ const ComposerCard: React.FC<ComposerCardProps> = ({
         className="relative w-full"
         style={{ minHeight: "100vh" }}
       >
-        {subItems.map((sub, i) => renderSubItem(sub, i, false))}
+        {subItems.map((sub, i) => renderSubItem(sub, i, "desktop"))}
       </div>
     );
   }
 
   return (
     <div className="flex flex-col items-center w-full">
-      {subItems.map((sub, i) => renderSubItem(sub, i, true))}
+      {subItems.map((sub, i) => renderSubItem(sub, i, "mobile"))}
     </div>
   );
 };

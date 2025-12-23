@@ -97,7 +97,6 @@ const Menu = ({
     return (
         <header ref={menuRef} className={headerClasses}>
             <div className="px-4 flex justify-between items-center">
-                {/* Desktop: Logo sempre visibile */}
                 <Link
                     href="/"
                     className="w-1/2 hidden md:block"
@@ -112,7 +111,6 @@ const Menu = ({
 
                 </Link>
 
-                {/* Mobile: Menu a sinistra o Logo */}
                 <div className="md:hidden flex-1">
                     <AnimatePresence>
                         {isOpen ? (
@@ -169,7 +167,6 @@ const Menu = ({
                     </AnimatePresence>
                 </div>
 
-                {/* Desktop: Menu dropdown a destra */}
                 <div
                     className="relative hidden md:flex items-center"
                     onMouseLeave={startCloseTimer}
@@ -239,7 +236,6 @@ const Menu = ({
                     )}
                 </div>
 
-                {/* Mobile: Logo toggle a destra */}
                 <div className="md:hidden">
                     {isOpen ? (
                         <button

@@ -86,7 +86,7 @@ export default function ProjectsMenu({ projects }: ProjectsMenuProps) {
               )}
             </a>
             {i < projects.length - 1 && (
-              <span className="mx-1 hidden lg:block text-4xl font-light relative z-50">
+              <span className="mx-1 hidden md:block text-3xl lg:text-4xl font-light relative z-50">
                 /
               </span>
             )}

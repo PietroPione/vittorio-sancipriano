@@ -6,7 +6,6 @@ const useMediaQuery = (query: string): boolean => {
   const [matches, setMatches] = useState(false);
 
   useEffect(() => {
-    // Assicurati che window sia definito (per evitare problemi con SSR)
     if (typeof window !== 'undefined') {
       const media = window.matchMedia(query);
       if (media.matches !== matches) {

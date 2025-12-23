@@ -49,7 +49,6 @@ const ProjectContent: React.FC<ProjectContentProps> = ({
     const [selectedIndex, setSelectedIndex] = useState(0);
 
     useEffect(() => {
-        // document.body.style.overflow = isPreview ? "hidden" : "auto";
         return () => {
             document.body.style.overflow = "auto";
         };

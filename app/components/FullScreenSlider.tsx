@@ -49,9 +49,9 @@ const FullScreenSlider: React.FC<FullScreenSliderProps> = ({
     : "";
 
   return (
-    <div className="fixed inset-0 z-[120] flex flex-col items-center justify-center bg-[var(--background)] text-[var(--foreground)] transition-colors duration-300">
+    <div className="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-[var(--background)] text-[var(--foreground)] transition-colors duration-300">
 
-      <div className="absolute top-4 left-4 z-[130] flex items-center">
+      <div className="absolute top-4 left-4 z-[1010] flex items-center">
         <Link href="/" onClick={onClose}>
           <h1
             className="inline-block max-w-full truncate text-[var(--foreground)] text-xs whitespace-nowrap overflow-hidden"
@@ -62,7 +62,7 @@ const FullScreenSlider: React.FC<FullScreenSliderProps> = ({
         </Link>
       </div>
 
-      <div className="absolute top-4 right-4 md:top-5 md:right-6 z-[130]">
+      <div className="absolute top-4 right-4 md:top-5 md:right-6 z-[1010]">
         <button
           onClick={onClose}
           className="p-2 transition-transform duration-200 hover:scale-110"
